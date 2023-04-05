@@ -1,6 +1,8 @@
 #include "binary_tree.hpp"
 #include "bdl_tree.hpp"
 
+#include "bin_tree.hpp"
+
 #include <vector>
 #include <stdio.h>
 
@@ -171,6 +173,9 @@ int main()
 	testRotate1();
 
 	testAddingAVL();
+
+	my_draw0();
+	//my_draw1();
 
 	
 	printf("-- Completed!\n");

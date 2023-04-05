@@ -4,6 +4,10 @@ project(BinaryTree)
 
 add_executable(tree_test 
     main.cpp 
-    binary_tree.cpp "bdl_tree.hpp" "bdl_tree.cpp")
+    binary_tree.cpp 
+    bdl_tree.hpp
+    bdl_tree.cpp
+    bin_tree.cpp
+ "bin_tree.hpp")
 
 
