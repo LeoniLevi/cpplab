@@ -1,6 +1,7 @@
 #include "myqsort.h"
 
 #include <vector>
+#include <utility>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,6 +24,25 @@ void myqsort(int* items, size_t beginIdx, size_t endIdx)
 
 	// sort items after split-pos (if any)
 	myqsort(items, splitLastLeqIdx + 1, endIdx);
+}
+
+void myqsort1(int* items, size_t beginIdx, size_t endIdx)
+{
+	if (endIdx < beginIdx || endIdx - beginIdx < 2)
+		return;
+	size_t lastIdx = endIdx - 1;
+	int pivot = items[lastIdx]; 
+	size_t gtIdx = beginIdx; // gtIdx: is to be a first idx of greater-than-pivot element
+	for (auto i = beginIdx; i < lastIdx; ++i) {
+		if (items[i] < pivot) {
+			std::swap(items[i], items[gtIdx]);
+			gtIdx += 1;
+		}
+	}
+	std::swap(items[gtIdx], items[lastIdx]);
+	// now pivot element is in 'splitIdx' position
+	myqsort1(items, beginIdx, gtIdx);
+	myqsort1(items, gtIdx + 1, endIdx);
 }
 
 
@@ -87,7 +107,9 @@ void print_ints(int* items, size_t numItems)
 std::vector<int> get_random_int_data(size_t numItems)
 {
 	std::vector<int> v;
-	srand((unsigned)time(nullptr));
+	clock_t val = clock();
+	//srand((unsigned)time(nullptr));
+	srand((unsigned)val);
 
 	for (auto i = 0; i < numItems; ++i) {
 		int num = rand() % 100;
@@ -102,25 +124,36 @@ void test_myqsort()
 {
 	//std::vector<int> myvect { 9, 6, 1, 7, 3, 5 };
 	std::vector<int> myvect = get_random_int_data(25);
-	
-
-	int* items = myvect.data();
-	size_t nitems = myvect.size();
 
 	printf(" ~~ source array:\n");
-	print_ints(items, nitems);
+	print_ints(myvect.data(), myvect.size());
 
-	bool check_split = false;
-	if (check_split) {
-		size_t out_last_le_idx;		
-		split_by_first(items, 0, nitems, &out_last_le_idx);
-		printf(" ~~ after split_by_first: out_last_le_idx=%d\n", (int)out_last_le_idx);
+	{
+		
+		int* items = myvect.data();
+		size_t nitems = myvect.size();
+
+		bool check_split = false;
+		if (check_split) {
+			size_t out_last_le_idx;
+			split_by_first(items, 0, nitems, &out_last_le_idx);
+			printf(" ~~ after split_by_first: out_last_le_idx=%d\n", (int)out_last_le_idx);
+			print_ints(items, nitems);
+		}
+
+
+		myqsort(items, 0, nitems);
+		printf(" ~~ after myqsort:\n");
 		print_ints(items, nitems);
 	}
 
+	myvect = get_random_int_data(25);
+	printf(" ~~ source array:\n");
+	print_ints(myvect.data(), myvect.size());
 
-	myqsort(items, 0, nitems);
-	printf(" ~~ after myqsort:\n");
-	print_ints(items, nitems);
+	myqsort1(myvect.data(), 0, myvect.size());
+
+	printf(" ~~ after myqsort1:\n");
+	print_ints(myvect.data(), myvect.size());
 
 }
