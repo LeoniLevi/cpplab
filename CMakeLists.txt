@@ -17,7 +17,7 @@ endif()
 
 add_compile_definitions(USE_CPP20_RANGES)
 add_compile_definitions(USE_CPP20_COROUTINES)
-#add_compile_definitions(USE_CPP17_FILESYSTEM)
+add_compile_definitions(USE_CPP17_FILESYSTEM)
 
 
 
@@ -36,7 +36,6 @@ set (sources
     src/rngplay.cpp
     src/coroplay.cpp
     src/conceptplay.cpp
-    ../Common/Logger.cpp
 )
 
 add_executable(example ${sources})

@@ -2,11 +2,62 @@
 
 #include <vector>
 #include <utility>
+#include <span>
+
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 void split_by_first(int items[], size_t beginIdx, size_t endIdx, size_t* last_less_eq_idx);
+
+
+void myqsort1(int* items, size_t beginIdx, size_t endIdx)
+{
+	if (endIdx < beginIdx || endIdx - beginIdx < 2)
+		return;
+	size_t lastIdx = endIdx - 1;
+	int pivot = items[lastIdx];
+	size_t gtIdx = beginIdx; // gtIdx: is to be a first idx of greater-than-pivot element
+	for (auto i = beginIdx; i < lastIdx; ++i) {
+		if (items[i] < pivot) {
+			std::swap(items[i], items[gtIdx]);
+			gtIdx += 1;
+		}
+	}
+	std::swap(items[gtIdx], items[lastIdx]);
+	// now pivot element is in 'splitIdx' position
+	myqsort1(items, beginIdx, gtIdx);
+	myqsort1(items, gtIdx + 1, endIdx);
+}
+
+void myqsort_span(std::span<int> items)
+{
+	size_t len = items.size();
+	if (len < 2)
+		return;
+
+	size_t lastIdx = len - 1;
+	int pivot = items[lastIdx];
+	size_t gtIdx = 0; // gtIdx: is to be a first idx of greater-than-pivot element
+	for (auto i = 0; i < lastIdx; ++i) {
+		if (items[i] < pivot) {
+			std::swap(items[i], items[gtIdx]);
+			gtIdx += 1;
+		}
+	}
+	std::swap(items[gtIdx], items[lastIdx]);
+	// now pivot element is in 'splitIdx' position
+
+	//myqsort_span(items.subspan(0, gtIdx));
+	//myqsort_span(items.subspan(gtIdx + 1, len - (gtIdx + 1)));
+	
+	//myqsort_span(std::span(items.begin(), items.begin() + gtIdx));
+	//myqsort_span(std::span(items.begin() + gtIdx + 1, items.end()));	
+
+	myqsort_span(items.first(gtIdx));
+	myqsort_span(items.last(len - (gtIdx + 1)));
+
+}
 
 void myqsort(int* items, size_t beginIdx, size_t endIdx)
 {
@@ -26,24 +77,6 @@ void myqsort(int* items, size_t beginIdx, size_t endIdx)
 	myqsort(items, splitLastLeqIdx + 1, endIdx);
 }
 
-void myqsort1(int* items, size_t beginIdx, size_t endIdx)
-{
-	if (endIdx < beginIdx || endIdx - beginIdx < 2)
-		return;
-	size_t lastIdx = endIdx - 1;
-	int pivot = items[lastIdx]; 
-	size_t gtIdx = beginIdx; // gtIdx: is to be a first idx of greater-than-pivot element
-	for (auto i = beginIdx; i < lastIdx; ++i) {
-		if (items[i] < pivot) {
-			std::swap(items[i], items[gtIdx]);
-			gtIdx += 1;
-		}
-	}
-	std::swap(items[gtIdx], items[lastIdx]);
-	// now pivot element is in 'splitIdx' position
-	myqsort1(items, beginIdx, gtIdx);
-	myqsort1(items, gtIdx + 1, endIdx);
-}
 
 
 void split_by_first_00(int items[], size_t begin_idx, size_t end_idx, size_t* last_less_eq_idx)
@@ -154,6 +187,16 @@ void test_myqsort()
 	myqsort1(myvect.data(), 0, myvect.size());
 
 	printf(" ~~ after myqsort1:\n");
+	print_ints(myvect.data(), myvect.size());
+
+	myvect = get_random_int_data(25);
+	printf(" ~~ source array:\n");
+	print_ints(myvect.data(), myvect.size());
+
+	std::span ss{ myvect.data(), myvect.size() };
+	myqsort_span(ss);
+
+	printf(" ~~ after myqsort_span:\n");
 	print_ints(myvect.data(), myvect.size());
 
 }

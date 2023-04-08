@@ -1,14 +1,15 @@
 #include "rngplay.h"
 
-#include <cstdio>
-//#include <cstring>
 #include <vector>
 #include <ranges>
+#include <span>
 
 #include <algorithm>
 
-using namespace std;
+#include <stdio.h>
 
+namespace ranges = std::ranges;
+namespace views = std::views;
 
 
 void range_play()
@@ -16,7 +17,11 @@ void range_play()
 	puts("\n === C++20 <RANGES> working example...");
 	puts("---------------------");
 
-	vector<int> ints = { 7, 12, 6, 9, 8, 5, 4 };
+	std::vector<int> ints = { 7, 12, 6, 9, 8, 5, 4 };
+
+	std::span ss { &ints[1], 3 };
+	printf(" span ss[1]: %d\n", ss[1]);
+
 	auto even = [](int i) {return i % 2 == 0; };
 	auto square = [](int i) { return i * i; };
 

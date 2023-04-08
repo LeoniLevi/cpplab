@@ -4,10 +4,25 @@
 #include "conceptplay.h"
 #include "myqsort.h"
 
-#include "Logger.h"
-
+#include <iostream>
+#include <fstream>
 #include <stdio.h>
 #include <string.h>
+
+//template <typename... TArgs>
+//void my_print(TArgs... args);
+
+void my_print()
+{
+	std::cout << "\n";
+}
+
+template<typename T, typename... TArgs>
+void my_print(T arg, TArgs... args)
+{
+	std::cout << arg << " ";
+	my_print(args...);
+}
 
 void hello()
 {
@@ -19,45 +34,56 @@ void hello()
 	printf("Hello, %s!\n", buf[0] ? buf : "Unknown");
 }
 
-
+void test_file()
+{
+	std::ofstream of("cucu.txt");
+	int n = 5;
+	of << "First Line: n=" << n << "\n";
+	of << "Second Line: n*n=" << n * n;
+}
 
 
 int main()
 {
-	startLogging("example_app");
+	puts("====== CPP-Example app");
+
+	puts("~~ RUN <my_print(5, \"mysval\", 'c');> :");
+	my_print(5, "mysval", 'c');
+	puts("~~ testing variadic template 'my_print': done");
 
 	bool run_hello = false;
 	if (run_hello) {
 		hello();
-		logInfo(" ~~ hello: done");
+		puts(" ~~ hello: done");
 	}
 
 	bool run_myqsort = true;
 	if (run_myqsort) {
 		test_myqsort();
-		logInfo(" ~~ test_myqsort: done");
+		puts(" ~~ test_myqsort: done");
 	}
 
 	//return 0;
+	//
 #ifdef USE_CPP20_COROUTINES
 	play_coroutines();
-	logInfo(" ~~ play_coroutines: done");
+	puts(" ~~ play_coroutines: done");
 #endif
 
 #ifdef USE_CPP20_RANGES
 	range_play();
-	logInfo(" ~~ range_play: done");
+	puts(" ~~ range_play: done");
 #endif
 
 #ifdef USE_CPP17_FILESYSTEM
 	fsplay();
-	logInfo(" ~~ fsplay: done");
+	puts(" ~~ fsplay: done");
 #endif
 
 	play_concepts();
-	logInfo(" ~~ playconcepts: done");
+	puts(" ~~ playconcepts: done");
 
-	printf(" ~~ program 'example': Completed! To exit - click <Enter>:\n");
+	printf("====== program 'CPP-Example': Completed! To exit - click <Enter>:\n");
     {char dummy[32]; fgets(dummy, sizeof dummy, stdin); }
 	return 0;
 }
