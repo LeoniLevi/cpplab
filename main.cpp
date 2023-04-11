@@ -57,6 +57,8 @@ int main()
 		puts(" ~~ hello: done");
 	}
 
+	test_mymergesort();
+
 	bool run_myqsort = true;
 	if (run_myqsort) {
 		test_myqsort();

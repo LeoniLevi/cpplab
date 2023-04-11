@@ -8,8 +8,69 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <assert.h>
+
 void split_by_first(int items[], size_t beginIdx, size_t endIdx, size_t* last_less_eq_idx);
 
+void print_ints(int* items, size_t numItems);
+
+void mymerge(int arr[], size_t first, size_t last, int temp[])
+{
+	size_t mid = (first + last) / 2;
+
+	size_t i1 = 0;
+	size_t i2 = first;
+	size_t i3 = mid + 1;
+
+	while (i2 <= mid && i3 <= last) {
+		if (arr[i2] < arr[i3])
+			temp[i1++] = arr[i2++];
+		else
+			temp[i1++] = arr[i3++];		
+	}
+
+	if (i2 <= mid) {
+		while (i2 <= mid) {
+			temp[i1++] = arr[i2++];
+		}
+	}
+	else {
+		assert(i3 <= last);
+		while (i3 <= last)
+			temp[i1++] = arr[i3++];
+	}
+
+	// copy temp to arr
+	assert(i1 == last - first + 1);
+	for (auto k = 0; k < i1; ++k) {
+		arr[first + k] = temp[k];
+	}
+}
+
+
+void mymergesort(int arr[], size_t first, size_t last, int temp[])
+{
+	//printf("-**-(%d..%d): ", (int)first, (int)last); 
+	//print_ints(arr + first, last - first + 1);
+	if (first < last) {
+		size_t mid = (first + last) / 2;
+		mymergesort(arr, first, mid, temp);
+		mymergesort(arr, mid + 1, last, temp);
+
+		mymerge(arr, first, last, temp);
+	}
+	//printf("-!!-(%d..%d): ", (int)first, (int)last); 
+	//print_ints(arr + first, last - first + 1);
+}
+
+void my_merge_sort_arr(int items[], size_t numItems)
+{
+	std::vector<int> varr(numItems);
+	int* temp = varr.data();
+	mymergesort(items, 0, numItems - 1, temp);
+}
+
+//----------------
 
 void myqsort1(int* items, size_t beginIdx, size_t endIdx)
 {
@@ -59,7 +120,7 @@ void myqsort_span(std::span<int> items)
 
 }
 
-void myqsort(int* items, size_t beginIdx, size_t endIdx)
+void myqsort_old(int* items, size_t beginIdx, size_t endIdx)
 {
 	if (endIdx <= beginIdx + 1) // if array empty or count=1
 		return;
@@ -71,10 +132,10 @@ void myqsort(int* items, size_t beginIdx, size_t endIdx)
 	std::swap(items[beginIdx], items[splitLastLeqIdx]);
 
 	// sort items before split-pos
-	myqsort(items, beginIdx, splitLastLeqIdx);
+	myqsort_old(items, beginIdx, splitLastLeqIdx);
 
 	// sort items after split-pos (if any)
-	myqsort(items, splitLastLeqIdx + 1, endIdx);
+	myqsort_old(items, splitLastLeqIdx + 1, endIdx);
 }
 
 
@@ -153,6 +214,20 @@ std::vector<int> get_random_int_data(size_t numItems)
 
 
 ////////////////////////////////
+void test_mymergesort()
+{
+	//std::vector<int> myvect { 9, 6, 1, 7, 3, 5 };
+	std::vector<int> myvect = get_random_int_data(25);
+
+	printf(" ~~ source array:\n");
+	print_ints(myvect.data(), myvect.size());
+
+	my_merge_sort_arr(myvect.data(), myvect.size());
+
+	printf(" ~~ after my_merge_sort_arr:\n");
+	print_ints(myvect.data(), myvect.size());
+}
+
 void test_myqsort()
 {
 	//std::vector<int> myvect { 9, 6, 1, 7, 3, 5 };
@@ -175,8 +250,8 @@ void test_myqsort()
 		}
 
 
-		myqsort(items, 0, nitems);
-		printf(" ~~ after myqsort:\n");
+		myqsort_old(items, 0, nitems);
+		printf(" ~~ after myqsort_old:\n");
 		print_ints(items, nitems);
 	}
 
