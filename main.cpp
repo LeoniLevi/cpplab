@@ -2,7 +2,7 @@
 #include "rngplay.h"
 #include "coroplay.h"
 #include "conceptplay.h"
-#include "myqsort.h"
+#include "mysort.h"
 
 #include <iostream>
 #include <fstream>
