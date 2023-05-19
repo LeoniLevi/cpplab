@@ -1,5 +1,7 @@
 #pragma once
 
+#include "tree_node.hpp"
+
 #include <memory>
 #include <functional>
 
@@ -9,25 +11,31 @@
 
 
 #ifdef USE_BDL_WEAK_PTR
-    class BdlTreeNode : public std::enable_shared_from_this<BdlTreeNode>
+    class BdlTreeNode : public TreeNode<int>, public std::enable_shared_from_this<BdlTreeNode>
 #else
-    class BdlTreeNode
+    class BdlTreeNode : public TreeNode<int>
 #endif
 {
 public:
+
+    int data() const override { return data_; }
+    const BdlTreeNode* left() const override { return left_.get(); }
+    const BdlTreeNode* right() const override { return right_.get(); }
+
+
     BdlTreeNode(int data) : data_(data), depth_(1) {}
-
-
     void addData(int data);
     void addDataAVL(int data);
 
     void iterateNodes(std::function<void(const BdlTreeNode&)>) const;
     bool isLeaf() const;
     
-    int data() const { return data_; }
     unsigned depth() const { return depth_; }
-    std::shared_ptr<BdlTreeNode> left() { return left_; }
-    std::shared_ptr<BdlTreeNode> right() { return right_; }
+
+    std::shared_ptr<BdlTreeNode> sleft() { return left_; }
+    std::shared_ptr<BdlTreeNode> sright() { return right_; }
+
+    
 
     static std::shared_ptr<BdlTreeNode> rotateRight(std::shared_ptr<BdlTreeNode> node);
     static std::shared_ptr<BdlTreeNode> rotateLeft(std::shared_ptr<BdlTreeNode> node);

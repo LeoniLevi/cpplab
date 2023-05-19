@@ -1,17 +1,26 @@
 #pragma once
 
+#include "tree_node.hpp"
+
 #include <memory>
 #include <functional>
 
-class TreeNode0 {
+class TreeNode0 : public TreeNode<int> {
 public:    
+    int data() const override { return data_; }
+    const TreeNode0* left() const override { return left_.get(); }
+    const TreeNode0* right() const override { return right_.get(); }
+
+
     TreeNode0(int data) : data_(data) {}
     void addData(int data); 
 
     void iterateNodes(std::function<void(const TreeNode0&)>) const;
     bool isLeaf() const;
 
-    int data() const { return data_; }
+    
+    
+
     TreeNode0* left() { return left_.get(); }
     TreeNode0* right() { return right_.get(); }
 

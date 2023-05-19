@@ -6,6 +6,15 @@
 #include <vector>
 #include <stdio.h>
 
+void drawTree(const TreeNode<int>* root)
+{
+	printf("~~~~~~~~~~~~~~~~~\n");
+	PrintBT(root);
+	printf("~~~~~~~~~~~~~~~~~\n");
+	DisplayBT(root, 0);
+	printf("~~~~~~~~~~~~~~~~~\n");
+}
+
 void test0()
 {
 	printf(" ==== test0 start...\n");
@@ -18,8 +27,9 @@ void test0()
 	root->addData(13);
 	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
 
-	root->printNodes(); printf("\n");
-	//root->printNodes1(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
 	printf("==== test0 done!\n");
 }
 
@@ -33,23 +43,31 @@ void testRotate0()
 	root->addData(8);
 
 	root->addData(7); 
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
 	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
 
 	printf(" ~~ rotateLeft(root)...\n");
 	root = TreeNode0::rotateLeft(root);
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
 	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
 
 	auto llnode = root->left()->left();
 	printf(" ~~ rotateLeftLeftChild(data=%d) - rotateRight...\n", llnode->data());
 	bool rotatedOk = root->left()->rotateLeftChildRight();
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
 	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
 
 	printf(" ~~ rotateRight(root)...\n");
 	root = TreeNode0::rotateRight(root);
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
 	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
 
 	printf("==== testRotate0 done!\n");
@@ -84,8 +102,9 @@ void test1()
 	
 	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
 
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
 	//root->printNodes1(); printf("\n");
+	drawTree(root.get());
 	printf("==== test1 done!\n");
 }
 
@@ -103,7 +122,8 @@ void testAddingAVL()
 
 		auto root = avlTree.root();
 
-		root->printNodes(); printf("\n");
+		//root->printNodes(); printf("\n");
+		drawTree(root.get());
 		printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
 	}
 	printf(" ~~ addDataAVL ...\n");
@@ -114,7 +134,8 @@ void testAddingAVL()
 			avlTree.addDataAVL(num);
 
 		auto root = avlTree.root();
-		root->printNodes(); printf("\n");
+		//root->printNodes(); printf("\n");
+		drawTree(root.get());
 		printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
 	}
 
@@ -137,26 +158,30 @@ void testRotate1()
 
 	//BdlTreeNode::addDataToDescendant(root, 7);
 
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
 	printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
 
 	printf(" ~~ rotateLeft(root)...\n");
 	root = BdlTreeNode::rotateLeft(root);
 	//root->printNodes1(); printf("\n"); 
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
 	printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
 
-	auto lnode = root->left()->left();
+	auto lnode = root->sleft()->sleft();
 	printf(" ~~ LeftLeftChild(data=%d) rotateRight...\n", lnode->data());
 	
 	auto nnode = BdlTreeNode::rotateRight(lnode);
 	//root->printNodes1(); printf("\n");
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
 	printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
 
 	printf(" ~~ rotateRight(root)...\n");
 	root = BdlTreeNode::rotateRight(root);
-	root->printNodes(); printf("\n");
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
 	printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
 
 	printf("==== testRotate1 done!\n");
@@ -174,7 +199,7 @@ int main()
 
 	testAddingAVL();
 
-	my_draw0();
+	//my_draw0();
 	//my_draw1();
 
 	
