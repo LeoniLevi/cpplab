@@ -1,5 +1,7 @@
 #include "bdl_tree.hpp"
 
+#include <assert.h>
+
 void BdlTreeNode::addData(int data)
 {
     auto newNode = std::make_shared<BdlTreeNode>(data);
@@ -64,6 +66,10 @@ void BdlTreeNode::addNodeAVL(std::shared_ptr<BdlTreeNode> node)
     }
     else {
         workChild = node;
+        if (node->data_ <= data_)
+            left_ = workChild;
+        else 
+            right_ = workChild;
 
         // set workChild parent into this
         makeMeParentOf(workChild);
@@ -110,16 +116,30 @@ bool BdlTreeNode::isLeaf() const
 std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateRight(std::shared_ptr<BdlTreeNode> node)
 {
     auto parent = node->parent_;
+    auto sparent = parent.lock();
+
     auto upNode = node->left_;
     auto downNode = node;
 
     auto newDownNodeLeft = upNode->right_;
     upNode->right_ = downNode;
     downNode->left_ = newDownNodeLeft;
+    if (newDownNodeLeft)
+        downNode->makeMeParentOf(newDownNodeLeft);
+
 
 #ifdef USE_BDL_WEAK_PTR    
-    if (!parent.expired())
-        parent.lock()->left_ = upNode;
+    if (!parent.expired()) {
+        //parent.lock()->left_ = upNode;
+        if (sparent) {
+            bool isLeftOfParent = node == sparent->left_;
+            assert(isLeftOfParent || node == sparent->right_);
+            if (isLeftOfParent)
+                sparent->left_ = upNode;
+            else
+                sparent->right_ = upNode;
+        }
+    }
     downNode->parent_ = upNode;
 #else
     if (parent) 
@@ -137,16 +157,33 @@ std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateRight(std::shared_ptr<BdlTreeNod
 std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateLeft(std::shared_ptr<BdlTreeNode> node)
 {
     auto parent = node->parent_;
+
+    auto sparent = parent.lock();
+    
+
+
+
     auto upNode = node->right_;
     auto downNode = node;
 
     auto newDownNodeRight = upNode->left_;
     upNode->left_ = downNode;
     downNode->right_ = newDownNodeRight;
+    if (newDownNodeRight)
+        downNode->makeMeParentOf(newDownNodeRight);
 
 #ifdef USE_BDL_WEAK_PTR
-    if (!parent.expired())
-        parent.lock()->right_ = upNode;
+    if (!parent.expired()) {
+        //parent.lock()->right_ = upNode;
+        if (sparent) {
+            bool isLeftOfParent = node == sparent->left_;
+            assert(isLeftOfParent || node == sparent->right_);
+            if (isLeftOfParent)
+                sparent->left_ = upNode;
+            else
+                sparent->right_ = upNode;
+        }
+    }
     downNode->parent_ = upNode;
 #else
     if (parent)

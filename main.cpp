@@ -8,10 +8,11 @@
 
 void drawTree(const TreeNode<int>* root)
 {
-	printf("~~~~~~~~~~~~~~~~~\n");
-	PrintBT(root);
+	//printf("~~~~~~~~~~~~~~~~~\n");
+	//PrintBT(root);
 	printf("~~~~~~~~~~~~~~~~~\n");
 	DisplayBT(root, 0);
+	//drawNodeTree(root, 2);
 	printf("~~~~~~~~~~~~~~~~~\n");
 }
 
@@ -29,6 +30,8 @@ void test0()
 
 	//root->printNodes(); printf("\n");
 	drawTree(root.get());
+
+	//drawNodeTree(root.get(), 2);
 
 	printf("==== test0 done!\n");
 }
@@ -105,6 +108,9 @@ void test1()
 	//root->printNodes(); printf("\n");
 	//root->printNodes1(); printf("\n");
 	drawTree(root.get());
+	printf("\n");
+	//drawNodeTree(root.get(), 2);
+	//DisplayBT(root.get(), 0);
 	printf("==== test1 done!\n");
 }
 
@@ -112,8 +118,30 @@ void testAddingAVL()
 {
 	printf(" ==== testAddingAVL start...\n");
 
-	std::vector<int> numbers{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-
+	//std::vector<int> numbers{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+	//std::vector<int> numbers{ 0, 92, 1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14 };
+	//std::vector<int> numbers{0, 2, 1, 2, 3, 4, 4};
+	//std::vector<int> numbers{ 2, 4, 1, 7, 0, 5, 6 };
+	//std::vector<int> numbers{ 2, 4, 1, 7, 0, 5, 6};
+	/*
+	std::vector<int> numbers;
+	for (int i = 0; i < 8; ++i) {
+		numbers.push_back(8 - i);
+	}
+	*/
+	
+	std::vector<int> numbers;
+	int maxNum = 99;
+	unsigned  nseed = (unsigned)time(NULL);
+	srand(nseed);
+	for (int i = 0; i < 24; ++i) {
+		int num = rand() % maxNum;
+		while (std::find(numbers.begin(), numbers.end(), num) != numbers.end()) {
+			num = rand() % maxNum;
+		}
+		numbers.push_back(num);
+	}
+	
 	printf(" ~~ addData ...\n");
 	{
 		BdlTree avlTree;
@@ -130,13 +158,21 @@ void testAddingAVL()
 	{
 		BdlTree avlTree;
 		
-		for (auto num : numbers)
-			avlTree.addDataAVL(num);
+		for (int i = 0; i < numbers.size(); ++i) {
+			avlTree.addDataAVL(numbers[i]);
+			/*
+			printf("!!=== Added N=%d:\n", numbers[i]);
+			drawNodeTree(avlTree.root().get(), 2);
+			printf("\n");
+			*/
+		}
+		printf(" !! Adding completed(NumItems=%d)\n", (int)numbers.size());
 
 		auto root = avlTree.root();
 		//root->printNodes(); printf("\n");
 		drawTree(root.get());
 		printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
+		drawNodeTree(root.get(), 2);
 	}
 
 	printf("==== testAddingAVL done!\n");
@@ -192,10 +228,10 @@ int main()
 {
 	printf("-- BinaryTree Test program...\n");
 	test0();
-	testRotate0();
+	//testRotate0();
 
 	test1();
-	testRotate1();
+	//testRotate1();
 
 	testAddingAVL();
 

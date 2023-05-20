@@ -17,12 +17,29 @@ int getDepth(const TreeNode<T>* node)
 {
     if (!node)
         return 0;
-    int dl = getDepth(node->left);
-    int dr = getDepth(node->right);
+    int dl = 1 + getDepth(node->left());
+    int dr = 1 + getDepth(node->right());
     return dl > dr ? dl : dr;
 }
-/*
-* // !! NOT FINISHED YET !!
+
+template<typename T>
+void drawSlot(int slotLen, const TreeNode<T>* node = 0) {
+    if (node)
+        std::cout << std::setfill('0') << std::setw(slotLen) << node->data() << std::setfill(' ');
+    else
+        std::cout << std::setw(slotLen) << "";
+    //std::cout << std::setfill(' ');
+}
+
+template<typename T>
+void drawSlotZone(int zoneLen, int slotLen, const TreeNode<T>* node)
+{
+    int prefixLen = (zoneLen - slotLen) / 2;
+    std::cout << std::setw(prefixLen) << "";
+    drawSlot(slotLen, node);
+    std::cout << std::setw(zoneLen - prefixLen - slotLen) << "";
+}
+
 template<typename T>
 void drawNodeTree(const TreeNode<T>* root, int slotLen)
 {
@@ -31,25 +48,31 @@ void drawNodeTree(const TreeNode<T>* root, int slotLen)
     for (int i = 2; i <= treeDepth; ++i) {
         maxDepNumSlots *= 2;
     }
-    int lineLen = (maxDepNumSlots * 2 - 1) * slotLen;
+    int lineLen = (maxDepNumSlots * 2) * slotLen;
 
-    int spaceLen = lineLen / 2 - slotLen / 2;
-    std::cout << std::setw(spaceLen) << " ";
     int numDepSlots = 1;
-    for (i = 2; i <= treeDepth) {
-        numDepSlots *= 2;
-        spaceLen = (lineLen - numDepSlots * slotLen) / numDepSlots;
-        for (j = 0; j < numDepSlots; ++j) {
+    std::vector<const TreeNode<T>*> lineNodes {root};
+    for (int dep = 1; dep <= treeDepth; ++dep) {
+        int zoneLen = lineLen / numDepSlots;
+        for (int j = 0; j < numDepSlots; ++j) {
+            drawSlotZone(zoneLen, slotLen, lineNodes[j]);
+        }
+        std::cout << '\n';
 
+        int nextNumDepSlots = numDepSlots * 2;
+        std::vector<const TreeNode<T>*> nextLineNodes(nextNumDepSlots);
+        for (int j = 0; j < numDepSlots; ++j) {
+            const TreeNode<T>* nd = lineNodes[j];
+            if (nd) {
+                nextLineNodes[j * 2] = nd->left();
+                nextLineNodes[j * 2 + 1] = nd->right();
+            }
         }
 
-
-        //spaceLen = lineLen / 2 - slotLen / 2;
-        //std::cout << std::setw(spaceLen) << " ";
+        numDepSlots = nextNumDepSlots;
+        lineNodes = nextLineNodes;
     }
-
 }
-*/
 
 template <typename T>
 void PrintBT(const std::string& prefix, const TreeNode<T>* node, bool isLeft)
@@ -76,15 +99,15 @@ void PrintBT(const TreeNode<T>* node)
 //========================
 
 template <typename T>
-void DisplayBT(const TreeNode<T>* current, int indent)
+void DisplayBT(const TreeNode<T>* node, int indent)
 {
-    //using namespace std;
-    if (current != nullptr)
-    {
-        DisplayBT(current->left(), indent + 4);
+    if (node) {
+        //DisplayBT(node->left(), indent + 4);
+        DisplayBT(node->right(), indent + 4);
         if (indent > 0)
-            std::cout << std::setw(indent) << " ";
-        std::cout << current->data() << std::endl;
-        DisplayBT(current->right(), indent + 4);
+            std::cout << std::setw(indent) << ' ';
+        std::cout << node->data() << std::endl;
+        //DisplayBT(node->right(), indent + 4);
+        DisplayBT(node->left(), indent + 4);
     }
 }
