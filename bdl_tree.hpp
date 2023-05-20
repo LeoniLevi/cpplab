@@ -5,10 +5,16 @@
 #include <memory>
 #include <functional>
 
-#define USE_BDL_WEAK_PTR
+//#define USE_BDL_WEAK_PTR
 
 
-
+enum class DepthBalanceStatus {
+    Ok = 0,
+    LeftLeft =1,
+    LeftRight = 2,
+    RightLeft = 3,
+    RightRight = 4,
+};
 
 #ifdef USE_BDL_WEAK_PTR
     class BdlTreeNode : public TreeNode<int>, public std::enable_shared_from_this<BdlTreeNode>
@@ -36,6 +42,7 @@ public:
     std::shared_ptr<BdlTreeNode> sright() { return right_; }
 
     
+    static std::shared_ptr<BdlTreeNode> ProvideNodeBalance(std::shared_ptr<BdlTreeNode> workChild);
 
     static std::shared_ptr<BdlTreeNode> rotateRight(std::shared_ptr<BdlTreeNode> node);
     static std::shared_ptr<BdlTreeNode> rotateLeft(std::shared_ptr<BdlTreeNode> node);
@@ -47,6 +54,7 @@ public:
 
 
     int getLeftMinusRightDepth() const;
+    DepthBalanceStatus getDepthBalanceStatus() const;
 private:
     void addNode(std::shared_ptr<BdlTreeNode> node);
     void addNodeAVL(std::shared_ptr<BdlTreeNode> node);
@@ -80,22 +88,17 @@ public:
         else
             root_->addData(data);
     }
-
+    
     void addDataAVL(int data) {
         if (!root_)
             root_ = std::make_shared<BdlTreeNode>(data);
-        else
+        else {
             root_->addDataAVL(data);
-
-        int diff = root_->getLeftMinusRightDepth();
-        std::shared_ptr<BdlTreeNode> upChild;
-        if (diff < -1)
-            upChild = BdlTreeNode::rotateLeft(root_);
-        else if (diff > 1)
-            upChild = BdlTreeNode::rotateRight(root_);
-        if (upChild) {
-            root_ = upChild;
         }
+
+        std::shared_ptr<BdlTreeNode> upChild = BdlTreeNode::ProvideNodeBalance(root_);
+        if (upChild) 
+            root_ = upChild;
     }
 
 

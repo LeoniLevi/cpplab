@@ -43,7 +43,28 @@ int BdlTreeNode::getLeftMinusRightDepth() const
     int rd = right_ ? right_->depth() : 0;
     return ld - rd;
 }
+DepthBalanceStatus BdlTreeNode::getDepthBalanceStatus() const
+{
+    int ld = left_ ? left_->depth() : 0;
+    int lld = left_ ? (left_->left_ ? left_->left_->depth() : 0) : 0;
+    int lrd = left_ ? (left_->right_ ? left_->right_->depth() : 0) : 0;
 
+    int rd = right_ ? right_->depth() : 0;
+    int rld = right_ ? (right_->left_ ? right_->left_->depth() : 0) : 0;
+    int rrd = right_ ? (right_->right_ ? right_->right_->depth() : 0) : 0;
+
+    if (ld - rd > 1) {
+        if (lrd > lld)
+            return DepthBalanceStatus::LeftRight;
+        return DepthBalanceStatus::LeftLeft;
+    }
+    if (rd - ld > 1) {
+        if (rld > rrd)
+            return DepthBalanceStatus::RightLeft;
+        return DepthBalanceStatus::RightRight;
+    }
+    return DepthBalanceStatus::Ok;
+}
 
 
 void BdlTreeNode::makeMeParentOf(std::shared_ptr<BdlTreeNode> node)
@@ -56,6 +77,30 @@ void BdlTreeNode::makeMeParentOf(std::shared_ptr<BdlTreeNode> node)
 #endif
 }
 
+// static
+std::shared_ptr<BdlTreeNode> BdlTreeNode::ProvideNodeBalance(std::shared_ptr<BdlTreeNode> node)
+{
+    std::shared_ptr<BdlTreeNode> upChild;
+    auto status = node->getDepthBalanceStatus();
+    if (status == DepthBalanceStatus::Ok)
+        return node;
+
+    if (status == DepthBalanceStatus::LeftLeft) {
+        upChild = BdlTreeNode::rotateRight(node);
+    }
+    else if (status == DepthBalanceStatus::LeftRight) {
+        BdlTreeNode::rotateLeft(node->sleft());
+        upChild = BdlTreeNode::rotateRight(node);
+    }
+    else if (status == DepthBalanceStatus::RightRight) {
+        upChild = BdlTreeNode::rotateLeft(node);
+    }
+    else if (status == DepthBalanceStatus::RightLeft) {
+        BdlTreeNode::rotateRight(node->sright());
+        upChild = BdlTreeNode::rotateLeft(node);
+    }
+    return upChild;
+}
 
 void BdlTreeNode::addNodeAVL(std::shared_ptr<BdlTreeNode> node)
 {    
@@ -75,18 +120,8 @@ void BdlTreeNode::addNodeAVL(std::shared_ptr<BdlTreeNode> node)
         makeMeParentOf(workChild);
     }
     updateDepthByChildren();
-    
-    int diff = workChild->getLeftMinusRightDepth();
-    std::shared_ptr<BdlTreeNode> upChild;
-    if (diff < -1)
-        upChild = BdlTreeNode::rotateLeft(workChild);
-    else if (diff > 1)
-        upChild = BdlTreeNode::rotateRight(workChild);
-    if (upChild) {
-        workChild = upChild;
-        makeMeParentOf(workChild);
-    }
 
+    BdlTreeNode::ProvideNodeBalance(workChild);
 
 }
 
@@ -116,7 +151,6 @@ bool BdlTreeNode::isLeaf() const
 std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateRight(std::shared_ptr<BdlTreeNode> node)
 {
     auto parent = node->parent_;
-    auto sparent = parent.lock();
 
     auto upNode = node->left_;
     auto downNode = node;
@@ -127,10 +161,10 @@ std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateRight(std::shared_ptr<BdlTreeNod
     if (newDownNodeLeft)
         downNode->makeMeParentOf(newDownNodeLeft);
 
-
 #ifdef USE_BDL_WEAK_PTR    
     if (!parent.expired()) {
         //parent.lock()->left_ = upNode;
+        auto sparent = parent.lock();
         if (sparent) {
             bool isLeftOfParent = node == sparent->left_;
             assert(isLeftOfParent || node == sparent->right_);
@@ -142,8 +176,15 @@ std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateRight(std::shared_ptr<BdlTreeNod
     }
     downNode->parent_ = upNode;
 #else
-    if (parent) 
-        parent->left_ = upNode;
+    if (parent) {
+        //parent->left_ = upNode;
+        bool isLeftOfParent = node == parent->left_;
+        assert(isLeftOfParent || node == parent->right_);
+        if (isLeftOfParent)
+            parent->left_ = upNode;
+        else
+            parent->right_ = upNode;
+    }
     downNode->parent_ = upNode.get();
 #endif
     upNode->parent_ = parent;
@@ -157,12 +198,6 @@ std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateRight(std::shared_ptr<BdlTreeNod
 std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateLeft(std::shared_ptr<BdlTreeNode> node)
 {
     auto parent = node->parent_;
-
-    auto sparent = parent.lock();
-    
-
-
-
     auto upNode = node->right_;
     auto downNode = node;
 
@@ -175,6 +210,7 @@ std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateLeft(std::shared_ptr<BdlTreeNode
 #ifdef USE_BDL_WEAK_PTR
     if (!parent.expired()) {
         //parent.lock()->right_ = upNode;
+        auto sparent = parent.lock();
         if (sparent) {
             bool isLeftOfParent = node == sparent->left_;
             assert(isLeftOfParent || node == sparent->right_);
@@ -186,8 +222,15 @@ std::shared_ptr<BdlTreeNode> BdlTreeNode::rotateLeft(std::shared_ptr<BdlTreeNode
     }
     downNode->parent_ = upNode;
 #else
-    if (parent)
-        parent->right_ = upNode;
+    if (parent) {
+        //parent->right_ = upNode;
+        bool isLeftOfParent = node == parent->left_;
+        assert(isLeftOfParent || node == parent->right_);
+        if (isLeftOfParent)
+            parent->left_ = upNode;
+        else
+            parent->right_ = upNode;
+    }
     downNode->parent_ = upNode.get();
 #endif
     upNode->parent_ = parent;
