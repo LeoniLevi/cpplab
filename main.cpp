@@ -3,6 +3,7 @@
 
 #include "bin_tree.hpp"
 #include "bst_node.hpp"
+#include "my_bin_tree.hpp"
 
 #include <vector>
 #include <stdio.h>
@@ -32,9 +33,17 @@ void testSimpleAdding()
 	//root->printNodes(); printf("\n");
 	drawTree(root.get());
 
+	{
+		printf(" ~~ MyBinTree experiment start...\n");
+		MyBinTree mbt(root.get());
+		mbt.Dump();
+
+		printf(" ~~ MyBinTree experiment done.\n");
+	}
+
 	//drawNodeTree(root.get(), 2);
 
-	printf("==== test0 done!\n");
+	printf("==== testSimpleAdding done!\n");
 }
 
 void testRotating()
@@ -124,6 +133,14 @@ void testAddingAVL()
 		drawTree(root.get());
 		printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
 		drawNodeTree(root.get(), 2);
+
+		{
+			printf(" ~~ MyBinTree experiment start...\n");
+			MyBinTree mbt(root.get());
+			mbt.Dump();
+
+			printf(" ~~ MyBinTree experiment done.\n");
+		}
 
 		printf(" ~~ Iterate nodes(Depth-First): \n");
 		iterateTreeNodesDF<int>(root.get(), [](auto& nd) { printf("%d, ", nd.data()); });
