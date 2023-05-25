@@ -2,6 +2,7 @@
 
 #include "tree_node.hpp"
 #include <sstream>
+#include <algorithm>
 
 //template <typename T>
 class MyBinTree {
