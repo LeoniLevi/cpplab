@@ -38,21 +38,23 @@ void deleteNode(BSTNode* node)
 
 
 
-void Display(BSTNode* current, int indent)
+void displayBT(const BSTNode* current, int indent)
 {
     using namespace std;
     if (current != nullptr)
     {
-        Display(current->m_left, indent + 4);
+        displayBT(current->m_left, indent + 4);
         if (indent > 0)
             cout << setw(indent) << " ";
         cout << current->m_val << endl;
-        Display(current->m_right, indent + 4);
+        displayBT(current->m_right, indent + 4);
     }
 }
 
 void test_bst_tree()
 {
+    printf(" ==== test_bst_tree start...\n");
+
     auto node0 = new BSTNode{ 16, 0, 0 };
     auto node10 = new BSTNode{ 8, 0, 0 };
     auto node11 = new BSTNode{ 24, 0, 0 };
@@ -94,11 +96,14 @@ void test_bst_tree()
     printBT(node0);
 
     std::cout << "\n----------------------------------\n";
-    Display(node0, 0);
+    displayBT(node0, 0);
     std::cout << "\n----------------------------------\n";
 
     deleteNode(node0);
 
     std::cout << "\n\n";
+
+    printf(" ==== test_bst_tree done!\n\n");
+
 
 }

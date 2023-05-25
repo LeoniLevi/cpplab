@@ -9,7 +9,7 @@ struct BSTNode {
 void deleteNode(BSTNode* node);
 
 void printBT(const BSTNode* node);
-void Display(BSTNode* current, int indent);
+void displayBT(const BSTNode* current, int indent);
 
 void test_bst_tree();
 

@@ -2,6 +2,7 @@
 #include "bdl_tree.hpp"
 
 #include "bin_tree.hpp"
+#include "bst_node.hpp"
 
 #include <vector>
 #include <stdio.h>
@@ -140,6 +141,9 @@ int main()
 	printf("-- BinaryTree Test program...\n");
 	testSimpleAdding();
 	testRotating();
+
+	test_bst_tree();
+	test_bin_tree();
 
 	testAddingAVL();
 
