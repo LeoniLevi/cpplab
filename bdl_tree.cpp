@@ -1,13 +1,13 @@
 #include "bdl_tree.hpp"
 
 #include <assert.h>
-
+/*
 void BdlTreeNode::addData(int data)
 {
     auto newNode = std::make_shared<BdlTreeNode>(data);
     addNode(newNode);
 }
-
+*/
 void BdlTreeNode::addDataAVL(int data)
 {
     auto newNode = std::make_shared<BdlTreeNode>(data);
@@ -36,13 +36,14 @@ void BdlTreeNode::updateDepthsRecursivelyUpToRoot()
         parent_->updateDepthsRecursivelyUpToRoot();
 #endif
 }
-
+/*
 int BdlTreeNode::getLeftMinusRightDepth() const
 {
     int ld = left_ ? left_->depth() : 0;
     int rd = right_ ? right_->depth() : 0;
     return ld - rd;
 }
+*/
 DepthBalanceStatus BdlTreeNode::getDepthBalanceStatus() const
 {
     int ld = left_ ? left_->depth() : 0;
@@ -252,14 +253,6 @@ int BdlTreeNode::calculateDepth() const
     return dd + 1;
 }
 
-void BdlTreeNode::iterateNodes(std::function<void(const BdlTreeNode&)> fn) const
-{
-    if (left_)
-        left_->iterateNodes(fn);
-    fn(*this);
-    if (right_)
-        right_->iterateNodes(fn);
-}
 
 void BdlTreeNode::printNodes() const
 {

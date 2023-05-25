@@ -8,6 +8,6 @@ add_executable(tree_test
     bdl_tree.hpp
     bdl_tree.cpp
     bin_tree.cpp
- "bin_tree.hpp")
+ "bin_tree.hpp" "bst_node.cpp")
 
 

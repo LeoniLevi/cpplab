@@ -2,13 +2,13 @@
 #include <stdio.h>
 
 //!!
-void TreeNode0::addData(int data)
+void BinaryTree::addData(int data)
 {
-    auto newNode = std::make_shared<TreeNode0>(data);
+    auto newNode = std::make_shared<BinaryTree>(data);
     addNode(newNode);
 }
 
-void TreeNode0::addNode(std::shared_ptr<TreeNode0> node)
+void BinaryTree::addNode(std::shared_ptr<BinaryTree> node)
 {
     auto& child = node->data_ <= data_ ? left_ : right_;
     if (child)
@@ -17,7 +17,7 @@ void TreeNode0::addNode(std::shared_ptr<TreeNode0> node)
         child = node;
 }
 
-bool TreeNode0::isLeaf() const 
+bool BinaryTree::isLeaf() const 
 {
     return !left_ && !right_;
 }
@@ -25,7 +25,7 @@ bool TreeNode0::isLeaf() const
 
 
 
-bool TreeNode0::rotateLeftChildRight()
+bool BinaryTree::rotateLeftChildRight()
 {
     if (!left_ || !left_->left_)
         return false;
@@ -33,7 +33,7 @@ bool TreeNode0::rotateLeftChildRight()
     return true;
 }
 
-bool TreeNode0::rotateLeftChildLeft()
+bool BinaryTree::rotateLeftChildLeft()
 {
     if (!left_ || !left_->right_)
         return false;
@@ -41,7 +41,7 @@ bool TreeNode0::rotateLeftChildLeft()
     return true;
 }
 
-bool TreeNode0::rotateRightChildRight()
+bool BinaryTree::rotateRightChildRight()
 {
     if (!right_ || !right_->left_)
         return false;
@@ -49,7 +49,7 @@ bool TreeNode0::rotateRightChildRight()
     return true;
 }
 
-bool TreeNode0::rotateRightChildLeft()
+bool BinaryTree::rotateRightChildLeft()
 {
     if (!right_ || !right_->right_)
         return false;
@@ -58,7 +58,7 @@ bool TreeNode0::rotateRightChildLeft()
 }
 
 // static
- std::shared_ptr<TreeNode0> TreeNode0::rotateRight(std::shared_ptr<TreeNode0> node)
+ std::shared_ptr<BinaryTree> BinaryTree::rotateRight(std::shared_ptr<BinaryTree> node)
 {
     auto upNode = node->left_;
     auto downNode = node;
@@ -71,7 +71,7 @@ bool TreeNode0::rotateRightChildLeft()
 }
 
  // static
-std::shared_ptr<TreeNode0> TreeNode0::rotateLeft(std::shared_ptr<TreeNode0> node)                              
+std::shared_ptr<BinaryTree> BinaryTree::rotateLeft(std::shared_ptr<BinaryTree> node)                              
 {
     auto upNode = node->right_;
     auto downNode = node;
@@ -82,8 +82,8 @@ std::shared_ptr<TreeNode0> TreeNode0::rotateLeft(std::shared_ptr<TreeNode0> node
 
     return upNode;
 }
-
-void TreeNode0::iterateNodes(std::function<void(const TreeNode0&)> fn) const
+/*
+void BinaryNode::iterateNodes(std::function<void(const BinaryNode&)> fn) const
 {
     if (left_)
         left_->iterateNodes(fn);
@@ -91,8 +91,8 @@ void TreeNode0::iterateNodes(std::function<void(const TreeNode0&)> fn) const
     if (right_)
         right_->iterateNodes(fn);
 }
-
-int TreeNode0::calculateDepth() const
+*/
+int BinaryTree::calculateDepth() const
 {    
     if (isLeaf())
         return 1;
@@ -103,7 +103,7 @@ int TreeNode0::calculateDepth() const
     return dd + 1;
 }
 
-void TreeNode0::printNodes() const
+void BinaryTree::printNodes() const
 {
     printf("(");
     if (left_) 
@@ -114,7 +114,7 @@ void TreeNode0::printNodes() const
     printf(")");
 }
 
-void TreeNode0::printNodes1() const
+void BinaryTree::printNodes1() const
 {
     printf("(");
     if (left_) {

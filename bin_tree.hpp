@@ -1,2 +1,3 @@
-int my_draw0(); 
-int my_draw1();
+#pragma once
+
+int test_bin_tree();

@@ -5,7 +5,7 @@
 #include <memory>
 #include <functional>
 
-//#define USE_BDL_WEAK_PTR
+#define USE_BDL_WEAK_PTR
 
 
 enum class DepthBalanceStatus {
@@ -30,13 +30,13 @@ public:
 
 
     BdlTreeNode(int data) : data_(data), depth_(1) {}
-    void addData(int data);
-    void addDataAVL(int data);
 
-    void iterateNodes(std::function<void(const BdlTreeNode&)>) const;
+    void addDataAVL(int data);
     bool isLeaf() const;
-    
+
     unsigned depth() const { return depth_; }
+
+    //void addData(int data);    
 
     std::shared_ptr<BdlTreeNode> sleft() { return left_; }
     std::shared_ptr<BdlTreeNode> sright() { return right_; }
@@ -53,7 +53,7 @@ public:
     int calculateDepth() const;
 
 
-    int getLeftMinusRightDepth() const;
+    //int getLeftMinusRightDepth() const;
     DepthBalanceStatus getDepthBalanceStatus() const;
 private:
     void addNode(std::shared_ptr<BdlTreeNode> node);
@@ -81,13 +81,6 @@ public:
     BdlTree() {}
 
     std::shared_ptr<BdlTreeNode> root() { return root_; }
-
-    void addData(int data) {
-        if (!root_)
-            root_ = std::make_shared<BdlTreeNode>(data);
-        else
-            root_->addData(data);
-    }
     
     void addDataAVL(int data) {
         if (!root_)

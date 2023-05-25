@@ -3,6 +3,8 @@
 #include <string>
 #include <iostream>
 #include <iomanip>
+#include <functional>
+#include <queue>
 
 template <typename T>
 class TreeNode {
@@ -20,6 +22,36 @@ int getDepth(const TreeNode<T>* node)
     int dl = 1 + getDepth(node->left());
     int dr = 1 + getDepth(node->right());
     return dl > dr ? dl : dr;
+}
+
+template <typename T>
+void iterateTreeNodesDF(const TreeNode<T>* treeNode, std::function<void(const TreeNode<T>&)> fn) 
+{
+    if (treeNode->left())
+        iterateTreeNodesDF(treeNode->left(), fn);
+    fn(*treeNode);
+    if (treeNode->right())
+        iterateTreeNodesDF(treeNode->right(), fn);
+}
+
+template <typename T>
+void iterateTreeNodesBF(const TreeNode<T>* treeNode, 
+                        std::function<void(const TreeNode<T>&)> fn)
+{
+    std::queue<const TreeNode<T>*> nq;
+    nq.push(treeNode);
+
+    while (!nq.empty()) {
+        auto node = nq.front();
+        nq.pop();
+
+        fn(*node);
+        
+        if (node->left())
+            nq.push(node->left());
+        if (node->right())
+            nq.push(node->right());            
+    }
 }
 
 template<typename T>
