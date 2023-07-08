@@ -1,9 +1,10 @@
 #include "binary_tree.hpp"
 #include "bdl_tree.hpp"
+#include "avl_tree.hpp"
 
-#include "bin_tree.hpp"
-#include "bst_node.hpp"
-#include "my_bin_tree.hpp"
+#include "_bst_node.hpp"
+#include "_bin_tree.hpp"
+#include "_my_bin_tree.hpp"
 
 #include <vector>
 #include <stdio.h>
@@ -16,6 +17,22 @@ void drawTree(const TreeNode<int>* root)
 	DisplayBT(root, 0);
 	//drawNodeTree(root, 2);
 	printf("~~~~~~~~~~~~~~~~~\n");
+}
+
+std::vector<int> get_random_arr(int arr_len, int max_val)
+{
+	std::vector<int> numbers;
+	int maxNum = max_val;
+	unsigned  nseed = (unsigned)time(NULL);
+	srand(nseed);
+	for (int i = 0; i < arr_len; ++i) {
+		int num = rand() % maxNum;
+		while (std::find(numbers.begin(), numbers.end(), num) != numbers.end()) {
+			num = rand() % maxNum;
+		}
+		numbers.push_back(num);
+	}
+	return numbers;
 }
 
 void testSimpleAdding()
@@ -86,6 +103,46 @@ void testRotating()
 	printf("==== testRotate0 done!\n");
 }
 
+void testNewAvlTree()
+{
+	printf(" ==== testNewAvlTree start...\n");
+	//std::vector<int> numbers{ 0, 2, 8, 1, 6, 4,  };
+	//std::vector<int> numbers{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+	//std::vector<int> numbers{ 0, 1, 2,  4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+	std::vector<int> numbers = get_random_arr(24, 99);
+
+
+	printf(" ~~ addDataAVL ...\n");
+	{
+		AvlTree<int> avlTree(3);
+		int numItems = 14;
+		for (int i = 0; i < numItems; ++i) {
+			avlTree.addValue(numbers[i]);
+			
+			printf("!!=== Added N=%d:\n", numbers[i]);
+			drawNodeTree(avlTree.root(), 2);
+			printf("\n");
+			bool bres = AvlNode<int>::check_depths(avlTree.root());
+			assert(bres);
+			
+		}
+		printf(" !! Adding completed(NumItems=%d)\n", (int)numbers.size());
+		/*
+		auto root = avlTree.root();
+		//root->printNodes(); printf("\n");
+		drawTree(root);
+		printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->max_depth());
+		drawNodeTree(root, 2);
+		*/
+	}
+	printf("==== testNewAvlTree done!\n");
+
+
+
+}
+
+
+
 void testAddingAVL()
 {
 	printf(" ==== testAddingAVL start...\n");
@@ -102,7 +159,8 @@ void testAddingAVL()
 	}
 	*/
 	
-	std::vector<int> numbers;
+	std::vector<int> numbers = get_random_arr(24, 99);
+	/*
 	int maxNum = 99;
 	unsigned  nseed = (unsigned)time(NULL);
 	srand(nseed);
@@ -113,7 +171,7 @@ void testAddingAVL()
 		}
 		numbers.push_back(num);
 	}
-
+	*/
 	printf(" ~~ addDataAVL ...\n");
 	{
 		BdlTree avlTree;
@@ -156,6 +214,11 @@ void testAddingAVL()
 int main()
 {
 	printf("-- BinaryTree Test program...\n");
+
+	testNewAvlTree();
+	return 0;
+
+
 	testSimpleAdding();
 	testRotating();
 

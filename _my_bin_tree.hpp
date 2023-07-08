@@ -11,7 +11,7 @@ public:
 
     MyBinTree(Node* node) : root_(node) {}
 
-    int get_max_depth() const { return root_ ? root_->max_depth() : 0; }
+    int get_max_depth() const { return root_ ? root_->max_deepness() : 0; }
 
     struct cell_display {
         std::string   valstr;
@@ -35,7 +35,7 @@ public:
         if (!root_) return display_rows();
 
         const Node* p = root_;
-        const int max_depth = root_->max_depth();
+        const int max_depth = root_->max_deepness();
         rows.resize(max_depth);
         int depth = 0;
         for (;;) {

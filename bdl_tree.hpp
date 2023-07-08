@@ -7,15 +7,6 @@
 
 #define USE_BDL_WEAK_PTR
 
-
-enum class DepthBalanceStatus {
-    Ok = 0,
-    LeftLeft =1,
-    LeftRight = 2,
-    RightLeft = 3,
-    RightRight = 4,
-};
-
 #ifdef USE_BDL_WEAK_PTR
     class BdlTreeNode : public TreeNode<int>, public std::enable_shared_from_this<BdlTreeNode>
 #else
@@ -27,6 +18,8 @@ public:
     int data() const override { return data_; }
     const BdlTreeNode* left() const override { return left_.get(); }
     const BdlTreeNode* right() const override { return right_.get(); }
+
+    //BdlTreeNode* set_left(BdlTreeNode* n) override {}
 
 
     BdlTreeNode(int data) : data_(data), depth_(1) {}

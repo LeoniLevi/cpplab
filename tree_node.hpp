@@ -6,6 +6,15 @@
 #include <functional>
 #include <queue>
 
+
+enum class DepthBalanceStatus {
+    Ok = 0,
+    LeftLeft = 1,
+    LeftRight = 2,
+    RightLeft = 3,
+    RightRight = 4,
+};
+
 template <typename T>
 class TreeNode {
 public:
@@ -13,10 +22,13 @@ public:
     virtual const TreeNode<T>* left() const = 0;
     virtual const TreeNode<T>* right() const = 0;
 
-    int max_depth() const {
-        const int left_depth = left() ? left()->max_depth() : 0;
-        const int right_depth = right() ? right()->max_depth() : 0;
-        return (left_depth > right_depth ? left_depth : right_depth) + 1;
+    //virtual void set_left(TreeNode* node) {throw;};
+    //virtual void set_right(TreeNode* node) {throw;};
+
+    int max_deepness() const {
+        const int left_dps = left() ? left()->max_deepness() : 0;
+        const int right_dps = right() ? right()->max_deepness() : 0;
+        return (left_dps > right_dps ? left_dps : right_dps) + 1;
     }
 };
 

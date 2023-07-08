@@ -1,4 +1,4 @@
-#include "bst_node.hpp"
+#include "_bst_node.hpp"
 
 #include <string>
 #include <iostream>
