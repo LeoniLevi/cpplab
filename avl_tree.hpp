@@ -39,7 +39,7 @@ public:
     }
 
     void recalcDepth() {
-        auto d0 = max_deepness();
+        auto d0 = this->max_deepness();
         //assert(d0 == depth_ + 1);
         if (left_ && right_)
             depth_ = (left_->depth_ > right_->depth_ ? left_->depth_ : right_->depth_) + 1;
@@ -50,7 +50,7 @@ public:
         else
             depth_ = 0;
 
-        auto d = max_deepness();
+        auto d = this->max_deepness();
         assert(d == depth_ + 1);
     }
     DepthBalanceStatus getDepthBalanceStatus() const;
