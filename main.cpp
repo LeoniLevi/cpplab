@@ -122,7 +122,7 @@ void testNewAvlTree()
 			printf("!!=== Added N=%d:\n", numbers[i]);
 			drawNodeTree(avlTree.root(), 2);
 			printf("\n");
-			bool bres = AvlNode<int>::check_depths(avlTree.root());
+			bool bres = avlTree.root()->check_depths();
 			assert(bres);
 			
 		}
@@ -152,26 +152,9 @@ void testAddingAVL()
 	//std::vector<int> numbers{0, 2, 1, 2, 3, 4, 4};
 	//std::vector<int> numbers{ 2, 4, 1, 7, 0, 5, 6 };
 	//std::vector<int> numbers{ 2, 4, 1, 7, 0, 5, 6};
-	/*
-	std::vector<int> numbers;
-	for (int i = 0; i < 8; ++i) {
-		numbers.push_back(8 - i);
-	}
-	*/
 	
 	std::vector<int> numbers = get_random_arr(24, 99);
-	/*
-	int maxNum = 99;
-	unsigned  nseed = (unsigned)time(NULL);
-	srand(nseed);
-	for (int i = 0; i < 24; ++i) {
-		int num = rand() % maxNum;
-		while (std::find(numbers.begin(), numbers.end(), num) != numbers.end()) {
-			num = rand() % maxNum;
-		}
-		numbers.push_back(num);
-	}
-	*/
+
 	printf(" ~~ addDataAVL ...\n");
 	{
 		BdlTree avlTree;
@@ -226,10 +209,6 @@ int main()
 	test_bin_tree();
 
 	testAddingAVL();
-
-	//my_draw0();
-	//my_draw1();
-
 	
 	printf("-- Completed!\n");
 	return 0;

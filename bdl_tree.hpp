@@ -35,7 +35,7 @@ public:
     std::shared_ptr<BdlTreeNode> sright() { return right_; }
 
     
-    static std::shared_ptr<BdlTreeNode> ProvideNodeBalance(std::shared_ptr<BdlTreeNode> workChild);
+    static std::shared_ptr<BdlTreeNode> provideNodeBalance(std::shared_ptr<BdlTreeNode> workChild);
 
     static std::shared_ptr<BdlTreeNode> rotateRight(std::shared_ptr<BdlTreeNode> node);
     static std::shared_ptr<BdlTreeNode> rotateLeft(std::shared_ptr<BdlTreeNode> node);
@@ -82,7 +82,7 @@ public:
             root_->addDataAVL(data);
         }
 
-        std::shared_ptr<BdlTreeNode> upChild = BdlTreeNode::ProvideNodeBalance(root_);
+        std::shared_ptr<BdlTreeNode> upChild = BdlTreeNode::provideNodeBalance(root_);
         if (upChild) 
             root_ = upChild;
     }

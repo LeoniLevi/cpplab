@@ -79,7 +79,7 @@ void BdlTreeNode::makeMeParentOf(std::shared_ptr<BdlTreeNode> node)
 }
 
 // static
-std::shared_ptr<BdlTreeNode> BdlTreeNode::ProvideNodeBalance(std::shared_ptr<BdlTreeNode> node)
+std::shared_ptr<BdlTreeNode> BdlTreeNode::provideNodeBalance(std::shared_ptr<BdlTreeNode> node)
 {
     std::shared_ptr<BdlTreeNode> upChild;
     auto status = node->getDepthBalanceStatus();
@@ -122,7 +122,7 @@ void BdlTreeNode::addNodeAVL(std::shared_ptr<BdlTreeNode> node)
     }
     updateDepthByChildren();
 
-    BdlTreeNode::ProvideNodeBalance(workChild);
+    BdlTreeNode::provideNodeBalance(workChild);
 
 }
 
