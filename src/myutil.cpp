@@ -1,6 +1,7 @@
 #include "myutil.h"
 
 #include <time.h>
+#include <stdio.h>
 
 void print_ints(int* items, size_t numItems)
 {

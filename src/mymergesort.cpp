@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <assert.h>
+#include <stdio.h>
 
 void mymerge(int arr[], size_t first, size_t last, int temp[])
 {

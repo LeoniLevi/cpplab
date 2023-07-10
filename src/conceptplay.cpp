@@ -22,6 +22,44 @@ concept HasLength = requires(T v)
     {v.length()} -> std::convertible_to<double>;
 };
 
+
+
+// == Trick which allows define HasLen2Fun before declaration of Len2 for builtin types...
+// == But, we still need to declare Len2 before function using HasLen2Fun types ...
+
+template<class T>
+struct A {
+    operator T() const;
+};
+
+template<typename T>
+concept HasLen2Fun = requires
+{
+    Len2(A<T>{});
+};
+
+double Len2(short b);
+static_assert(HasLen2Fun<short>);
+
+double Len2(std::string b);
+static_assert(HasLen2Fun<std::string>);
+
+
+template<HasLen2Fun T>
+double TotalLen2Fun(const std::vector<T>& vec)
+{
+    double len = 0.0;
+    for (auto& v : vec)
+        len += Len2(v);
+    return len;
+}
+
+
+double Len2(short b) { return b; }
+double Len2(std::string s) { return (double)s.length(); }
+
+
+
 // functions of built-in types is to be declared to be visible by concept 'HasLengthFun'
 // (because of ADL: "argument-dependent lookup" (aka Koenig Lookup))
 double Len(const std::string& s);
@@ -30,7 +68,6 @@ double Len(int n);
 template<typename T>
 concept HasLenFun = requires(T v)
 {
-    //{Len(v)} -> std::convertible_to<double>;
     Len(v);
 };
 
@@ -102,6 +139,8 @@ void play_concepts()
     printf(" ~~ TotalLen: ofStrings=%f; ofVector2Ds=%f\n", slen, vlen);
 
     std::vector<Point> points{ {3, 4}, { 1, 2 }, { 5, 6 }};
+    std::vector<short> shorts{ 11, 12, 13, 14, 15 };
+   
 
     double nlens = TotalLenFun(ints); // ERROR!??
     printf(" ~~ TotalLenFun result: ofInts=%f\n", nlens);
@@ -114,5 +153,13 @@ void play_concepts()
     //printf(" ~~ TotalLengthFun result: ofDoubles=%f\n", dlen);
     double ptlens = TotalLenFun(points); // ERROR!??
     printf(" ~~ TotalLengthFun result: ofPoints=%f\n", ptlens);
+
+    ////--
+
+    double slens = TotalLen2Fun(shorts);
+    printf(" ~~ TotalLen2Fun result: ofShorts=%f\n", slens);
+    double sslens = TotalLen2Fun(strings);
+    printf(" ~~ TotalLen2Fun result: ofStrings=%f\n", sslens);
+    //double pplens = TotalLen2Fun(points); // ERROR
 
 }
