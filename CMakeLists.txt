@@ -32,7 +32,7 @@ message("~~ MSVC: ${MSVC}")
 set (sources
     main.cpp
     src/fsplay.cpp
-    src/mysort.cpp
+    src/myqsort.cpp
     src/mymergesort.cpp
     src/myutil.cpp
     src/rngplay.cpp
