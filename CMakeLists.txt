@@ -33,6 +33,8 @@ set (sources
     main.cpp
     src/fsplay.cpp
     src/mysort.cpp
+    src/mymergesort.cpp
+    src/myutil.cpp
     src/rngplay.cpp
     src/coroplay.cpp
     src/conceptplay.cpp

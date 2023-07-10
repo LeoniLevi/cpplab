@@ -3,6 +3,7 @@
 #include "coroplay.h"
 #include "conceptplay.h"
 #include "mysort.h"
+#include "mymergesort.h"
 
 #include <iostream>
 #include <fstream>
