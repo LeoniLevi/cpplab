@@ -2,8 +2,10 @@
 #include "rngplay.h"
 #include "coroplay.h"
 #include "conceptplay.h"
+
 #include "myqsort.h"
 #include "mymergesort.h"
+#include "myheapsort.h"
 
 #include <iostream>
 #include <fstream>
@@ -57,6 +59,8 @@ int main()
 		hello();
 		puts(" ~~ hello: done");
 	}
+
+	test_myheapsort();
 
 	test_mymergesort();
 

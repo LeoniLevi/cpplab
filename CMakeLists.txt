@@ -34,13 +34,14 @@ set (sources
     src/fsplay.cpp
     src/myqsort.cpp
     src/mymergesort.cpp
+    src/myheapsort.cpp
     src/myutil.cpp
     src/rngplay.cpp
     src/coroplay.cpp
     src/conceptplay.cpp
 )
 
-add_executable(example ${sources})
+add_executable(example ${sources} )
 
 target_include_directories(example PRIVATE src ../Common)
 if (UNIX)
