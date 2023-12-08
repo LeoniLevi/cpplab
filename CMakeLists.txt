@@ -1,18 +1,22 @@
 cmake_minimum_required(VERSION 3.10)
 
+project(example)
+
 if (UNIX)
-    set(CMAKE_C_COMPILER "gcc-10")
-    set(CMAKE_CXX_COMPILER "g++-10")
+    #set(CMAKE_C_COMPILER "/usr/bin/gcc-13")
+    #set(CMAKE_CXX_COMPILER "/usr/bin/g++-13")
+    message("~~ CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
 endif()
 
-project(example)
+
+#project(example)
 
 if (MSVC)
     add_compile_options("-std:c++latest")
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 else()
     set(CMAKE_CXX_STANDARD 20)
-    add_compile_options(-fcoroutines)
+    #add_compile_options(-fcoroutines)
 endif()
 
 add_compile_definitions(USE_CPP20_RANGES)
