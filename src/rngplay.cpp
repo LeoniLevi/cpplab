@@ -40,6 +40,18 @@ void range_play()
 		printf("%d; ", i);
 	}
 	putchar('\n');
+
+
+
+	std::vector vec = { 1, 2, 3, 4, 5, 6 };
+	//auto vsq = views::filter(vec, [](auto n) {return n % 2 == 0; });
+	auto vsq = vec | views::filter([](auto n) {return n % 2 == 0; }) 
+		| views::transform([](auto nn) {return nn * nn; });
+	for (auto nn : vsq) {
+		printf("%d ", nn);
+	}
+	printf("\n");
+	puts(" === range_play completed!");
 }
 
 /////////////////////
