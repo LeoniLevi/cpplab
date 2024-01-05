@@ -199,7 +199,7 @@ int main()
 	printf("-- BinaryTree Test program...\n");
 
 	testNewAvlTree();
-	return 0;
+	//return 0;
 
 
 	testSimpleAdding();
