@@ -10,8 +10,16 @@ public:
     const AvlNode<T>* left() const override {return left_;}
     const AvlNode<T>* right() const override { return right_; }
 
-    static AvlNode<T>* create(T value) { return new AvlNode<T>(value); }
-    static void destroy(AvlNode<T>* node) { delete node; }
+
+    static AvlNode<T>* create(T value, int& counter) { ++counter; return new AvlNode<T>(value); }
+    static void destroy(AvlNode<T>* node, int& counter) { 
+        if (node->left_)
+            destroy(node->left_, counter);
+        if (node->right_)
+            destroy(node->right_, counter);
+        delete node; 
+        ++counter;
+    }
 
     static void addNode(AvlNode<T>* parent, AvlNode<T>* newNode);
     static AvlNode<T>* provideNodeBalance(AvlNode<T>* node);
@@ -38,10 +46,14 @@ private:
 template<typename T>
 class AvlTree {
 public: 
-    AvlTree(T value) : root_(AvlNode<T>::create(value)) {}
+    AvlTree(T value) : root_(AvlNode<T>::create(value, NumCreated)) {}
+    ~AvlTree() { 
+        AvlNode<T>::destroy(root_, NumDestroyed); 
+        printf(" ~~ AvlTree deallocated: NCreated=%d; NDestroy=%d", NumCreated, NumDestroyed);
+    }
     AvlNode<T>* root() {return root_;}
     void addValue(T val) {
-        AvlNode<T>* newNode = AvlNode<T>::create(val);
+        AvlNode<T>* newNode = AvlNode<T>::create(val, NumCreated);
         AvlNode<T>::addNode(root_, newNode);
         bool bres = root_->check_depths();
         assert(bres);
@@ -49,7 +61,8 @@ public:
         if (newParentNode != root_)
             root_ = newParentNode;
     }
-
+    int NumCreated = 0;
+    int NumDestroyed = 0;
 private:
     AvlNode<T>* root_;
 };
