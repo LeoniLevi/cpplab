@@ -119,26 +119,16 @@ void testNewAvlTree()
 		for (int i = 0; i < numItems; ++i) {
 			avlTree.addValue(numbers[i]);
 			
-			printf("!!=== Added N=%d:\n", numbers[i]);
-			drawNodeTree(avlTree.root(), 2);
-			printf("\n");
+			//printf("!!=== Added N=%d:\n", numbers[i]);
+			//drawNodeTree(avlTree.root(), 2);
+			//printf("\n");
 			bool bres = avlTree.root()->check_depths();
-			assert(bres);
-			
+			assert(bres);			
 		}
+		drawNodeTree(avlTree.root(), 2);
 		printf(" !! Adding completed(NumItems=%d)\n", (int)numbers.size());
-		/*
-		auto root = avlTree.root();
-		//root->printNodes(); printf("\n");
-		drawTree(root);
-		printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->max_depth());
-		drawNodeTree(root, 2);
-		*/
 	}
 	printf("==== testNewAvlTree done!\n");
-
-
-
 }
 
 
@@ -201,7 +191,7 @@ int main()
 	testNewAvlTree();
 	//return 0;
 
-
+/*
 	testSimpleAdding();
 	testRotating();
 
@@ -209,7 +199,7 @@ int main()
 	test_bin_tree();
 
 	testAddingAVL();
-	
+	*/
 	printf("-- Completed!\n");
 	return 0;
 }
