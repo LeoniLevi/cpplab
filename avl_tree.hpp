@@ -28,6 +28,7 @@ public:
 
 private:
     AvlNode(T val) : data_(val), left_(0), right_(0), depth_(0) {}
+    ~AvlNode() {}
     void recalcDepth();    
     static AvlNode<T>* rotateRight(AvlNode<T>* node);
     static AvlNode<T>* rotateLeft(AvlNode<T>* node); 
@@ -45,16 +46,18 @@ private:
 template<typename T>
 class AvlTree {
 public: 
-    AvlTree(T value) : root_(AvlNode<T>::create(value, NumCreated)) {}
+    AvlTree() : root_(0) {}
     ~AvlTree() { 
         AvlNode<T>::destroy(root_, NumDestroyed); 
         printf(" ~~ AvlTree deallocated: NCreated=%d; NDestroy=%d\n", NumCreated, NumDestroyed);
     }
-    //~AvlTree() { AvlNode<T>::destroy(root_); }
     AvlNode<T>* root() {return root_;}
     void addValue(T val) {
         AvlNode<T>* newNode = AvlNode<T>::create(val, NumCreated);
-        AvlNode<T>::addNode(root_, newNode);
+        if (!root_)
+            root_ = newNode;
+        else
+            AvlNode<T>::addNode(root_, newNode);
         bool bres = root_->check_depths();
         assert(bres);
         AvlNode<T>* newParentNode = AvlNode<T>::provideNodeBalance(root_);

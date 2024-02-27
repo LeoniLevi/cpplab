@@ -114,7 +114,7 @@ void testNewAvlTree()
 
 	printf(" ~~ addDataAVL ...\n");
 	{
-		AvlTree<int> avlTree(3);
+		AvlTree<int> avlTree;
 		int numItems = 14;
 		for (int i = 0; i < numItems; ++i) {
 			avlTree.addValue(numbers[i]);
