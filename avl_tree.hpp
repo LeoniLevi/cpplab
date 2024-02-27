@@ -20,6 +20,12 @@ public:
 
 private:
     AvlNode(T val) : data_(val), left_(0), right_(0), depth_(0) {}
+    ~AvlNode() {
+        if (left_)
+            delete(left_);
+        if (right_)
+            delete(right_);
+    }
 
     void recalcDepth();    
     static AvlNode<T>* rotateRight(AvlNode<T>* node);
@@ -39,6 +45,7 @@ template<typename T>
 class AvlTree {
 public: 
     AvlTree(T value) : root_(AvlNode<T>::create(value)) {}
+    ~AvlTree() { AvlNode<T>::destroy(root_); }
     AvlNode<T>* root() {return root_;}
     void addValue(T val) {
         AvlNode<T>* newNode = AvlNode<T>::create(val);
