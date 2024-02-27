@@ -115,7 +115,7 @@ void testNewAvlTree()
 	printf(" ~~ addDataAVL ...\n");
 	{
 		AvlTree<int> avlTree;
-		int numItems = 14;
+		int numItems = 19;
 		for (int i = 0; i < numItems; ++i) {
 			avlTree.addValue(numbers[i]);
 			
@@ -126,7 +126,7 @@ void testNewAvlTree()
 			assert(bres);			
 		}
 		drawNodeTree(avlTree.root(), 2);
-		printf(" !! Adding completed(NumItems=%d)\n", (int)numbers.size());
+		printf(" !! Adding completed(NumItems=%d)\n", numItems);
 	}
 	printf("==== testNewAvlTree done!\n");
 }
