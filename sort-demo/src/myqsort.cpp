@@ -3,7 +3,10 @@
 
 #include <vector>
 #include <utility>
+
+#ifdef USE_CPP20_SPAN
 #include <span>
+#endif
 
 #include <time.h>
 #include <stdio.h>
@@ -36,6 +39,7 @@ void myqsort1(int* items, size_t beginIdx, size_t endIdx)
 	myqsort1(items, gtIdx + 1, endIdx);
 }
 
+#ifdef USE_CPP20_SPAN
 void myqsort_span(std::span<int> items)
 {
 	size_t len = items.size();
@@ -64,7 +68,7 @@ void myqsort_span(std::span<int> items)
 	myqsort_span(items.last(len - (gtIdx + 1)));
 
 }
-
+#endif
 
 
 void split_by_first(int items[], size_t beginIdx, size_t endIdx, size_t* last_less_eq_idx)
@@ -126,13 +130,12 @@ void test_myqsort()
 	myvect = get_random_int_data(25);
 	printf(" ~~ source array:\n");
 	print_ints(myvect.data(), myvect.size());
-
+#ifdef USE_CPP20_SPAN
 	std::span ss{ myvect.data(), myvect.size() };
 	myqsort_span(ss);
-
 	printf(" ~~ after myqsort_span:\n");
 	print_ints(myvect.data(), myvect.size());
-
+#endif
 }
 
 

@@ -3,9 +3,9 @@
 #include "coroplay.h"
 #include "conceptplay.h"
 
-#include "myqsort.h"
-#include "mymergesort.h"
-#include "myheapsort.h"
+//#include "myqsort.h"
+//#include "mymergesort.h"
+//#include "myheapsort.h"
 
 #include <iostream>
 #include <fstream>
@@ -134,15 +134,6 @@ int main()
 		puts(" ~~ hello: done");
 	}
 
-	test_myheapsort();
-
-	test_mymergesort();
-
-	bool run_myqsort = true;
-	if (run_myqsort) {
-		test_myqsort();
-		puts(" ~~ test_myqsort: done");
-	}
 
 	//return 0;
 	//
