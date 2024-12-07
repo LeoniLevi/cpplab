@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(example)
+project(cpp20_demo)
 
 if (UNIX)
     #set(CMAKE_C_COMPILER "/usr/bin/gcc-13")
@@ -8,8 +8,6 @@ if (UNIX)
     message("~~ CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
 endif()
 
-
-#project(example)
 
 if (MSVC)
     add_compile_options("-std:c++latest")
@@ -45,9 +43,9 @@ set (sources
     src/conceptplay.cpp
 )
 
-add_executable(example ${sources} )
+add_executable(cpp20_demo ${sources} )
 
-target_include_directories(example PRIVATE src ../Common)
+target_include_directories(cpp20_demo PRIVATE src ../Common)
 if (UNIX)
-    target_link_libraries(example pthread)
+    target_link_libraries(cpp20_demo pthread)
 endif()
