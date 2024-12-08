@@ -109,7 +109,7 @@ int main()
 {
     puts("====== CPP-Example app");
 
-    printf(" ~~ __cplusplus: %uu\n", __cplusplus);
+    printf(" ~~ __cplusplus: %lu\n", __cplusplus);
 
 #if defined(_MSC_VER) && !defined(__clang__)
     printf(" ~~ _MSVC_LANG: %d\n", (int)_MSVC_LANG);
@@ -135,12 +135,8 @@ int main()
     }
 
 
-    //return 0;
-    //
-#ifdef USE_CPP20_COROUTINES
     play_coroutines();
     puts(" ~~ play_coroutines: done");
-#endif
 
 #ifdef USE_CPP20_RANGES
     range_play();

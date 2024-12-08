@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(cpp20_demo)
 
+message (" ~~ cpp20_demo building...")
+
 if (UNIX)
     #set(CMAKE_C_COMPILER "/usr/bin/gcc-13")
     #set(CMAKE_CXX_COMPILER "/usr/bin/g++-13")
@@ -18,8 +20,14 @@ else()
 endif()
 
 add_compile_definitions(USE_CPP20_RANGES)
-add_compile_definitions(USE_CPP20_COROUTINES)
 add_compile_definitions(USE_CPP17_FILESYSTEM)
+
+option(BUILD_COROUTINES "Build coroutione c++20 related code" ON)
+
+if (BUILD_COROUTINES)
+    add_compile_definitions(USE_CPP20_COROUTINES)
+endif()
+    
 
 
 
@@ -34,10 +42,6 @@ message("~~ MSVC: ${MSVC}")
 set (sources
     main.cpp
     src/fsplay.cpp
-    #src/myqsort.cpp
-    #src/mymergesort.cpp
-    #src/myheapsort.cpp
-    #src/myutil.cpp
     src/rngplay.cpp
     src/coroplay.cpp
     src/conceptplay.cpp

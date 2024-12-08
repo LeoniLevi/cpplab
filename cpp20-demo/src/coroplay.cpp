@@ -1,5 +1,7 @@
 #include <coroplay.h>
 
+#ifdef USE_CPP20_COROUTINES
+
 #include <coroutine>
 #include <iostream>
 #include <stdexcept>
@@ -166,56 +168,6 @@ bool play_fibonacci()
 }
 
 ///////
-/*
-#include <future>
-//using namespace std;
-
-std::future<int> async_add(int a, int b)
-{
-    auto fut = std::async([=]() {
-        int c = a + b;
-        return c;
-        });
-
-    return fut;
-}
-
-std::future<int> async_fib(int n)
-{
-    if (n <= 2)
-        co_return 1;
-
-    int a = 1;
-    int b = 1;
-
-    // iterate computing fib(n)
-    for (int i = 0; i < n - 2; ++i)
-    {
-        int c = co_await async_add(a, b);
-        a = b;
-        b = c;
-    }
-
-    co_return b;
-}
-
-std::future<void> test_async_fib()
-{
-    for (int i = 1; i < 10; ++i)
-    {
-        int ret = co_await async_fib(i);
-        std::cout << "async_fib(" << i << ") returns " << ret << std::endl;
-    }
-}
-
-int main__()
-{
-    auto fut = test_async_fib();
-    fut.wait();
-
-    return 0;
-}
-*/
 
 struct ReturnObject {
     struct promise_type {
@@ -259,3 +211,14 @@ bool play_coroutines()
     //resuming_on_new_thread(out);
     return true;
 }
+
+#else
+
+#include <stdio.h>
+bool play_coroutines()
+{
+    puts("\n === !! Coroutines are disabled (USE_CPP20_COROUTINES is #undef)");
+
+    return true;
+}
+#endif

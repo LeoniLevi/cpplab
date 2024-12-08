@@ -18,12 +18,11 @@
             "buildRoot": "${projectDir}\\out\\build\\${name}",
             "installRoot": "${projectDir}\\out\\install\\${name}",
             "cmakeExecutable": "cmake",
-            "cmakeCommandArgs": "",
+            "cmakeCommandArgs": "-DCMAKE_C_COMPILER=/usr/bin/gcc-10 -DCMAKE_CXX_COMPILER=/usr/bin/g++-10 -DBUILD_COROUTINES=OFF",
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
             "inheritEnvironments": [ "linux_x64" ],
-            "wslPath": "${defaultWSLPath}",
-            "variables": []
+            "wslPath": "${defaultWSLPath}"
         }
     ]
 }
