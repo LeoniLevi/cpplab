@@ -1,7 +1,8 @@
-/build
-/bld
+**/build
+**/bld
 **/bin
 .*/
 **/out
 *.user
 
+/cpp20-demo/build
