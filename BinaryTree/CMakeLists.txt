@@ -4,6 +4,7 @@ project(BinaryTree)
 
 add_executable(tree_test 
     main.cpp 
+    src/rbint_tree.cpp
     src/avl_tree.cpp
     src/binary_tree.cpp 
     src/bdl_tree.hpp

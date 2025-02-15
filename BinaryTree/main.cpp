@@ -1,6 +1,7 @@
 #include "binary_tree.hpp"
 #include "bdl_tree.hpp"
 #include "avl_tree.hpp"
+#include "rbint_tree.hpp"
 
 #include "_bst_node.hpp"
 #include "_bin_tree.hpp"
@@ -187,6 +188,8 @@ void testAddingAVL()
 int main()
 {
 	printf("-- BinaryTree Test program...\n");
+
+	test_rbint_tree();
 
 	testNewAvlTree();
 	//return 0;
