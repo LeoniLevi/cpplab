@@ -1,11 +1,9 @@
 #include "binary_tree.hpp"
-#include "bdl_tree.hpp"
-#include "avl_tree.hpp"
-#include "rbint_tree.hpp"
+#include "avl/bdl_tree.hpp"
+#include "avl/avl_tree.hpp"
+#include "red-black/rbint_tree.hpp"
+#include "legacy/_my_bin_tree.hpp"
 
-#include "_bst_node.hpp"
-#include "_bin_tree.hpp"
-#include "_my_bin_tree.hpp"
 
 #include <vector>
 #include <stdio.h>
