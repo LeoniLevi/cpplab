@@ -61,5 +61,3 @@ public:
 private:
     RBIntNode* root_;
 };
-
-void test_rbint_tree();

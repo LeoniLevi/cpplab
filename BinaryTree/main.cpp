@@ -2,11 +2,49 @@
 #include "avl/bdl_tree.hpp"
 #include "avl/avl_tree.hpp"
 #include "red-black/rbint_tree.hpp"
+
+//#define TEST_LEGACY_TREES
+#ifdef TEST_LEGACY_TREES
 #include "legacy/_my_bin_tree.hpp"
+#include "legacy/_bst_node.hpp"
+#include "legacy/_bin_tree.hpp"
+#endif
 
 
 #include <vector>
 #include <stdio.h>
+
+void testBinaryTreeAdding();
+void testBinaryTreeRotating();
+
+void testRBIntTree();
+void testAvlTree();
+void testBdlTree();
+
+int main()
+{
+	printf("-- BinaryTree Test program...\n");
+
+#ifdef TEST_LEGACY_TREES
+
+	testBinaryTreeAdding();
+	testBinaryTreeRotating();
+
+	test_bst_tree();
+	test_bin_tree();
+#endif
+
+	testRBIntTree();
+
+	testAvlTree();
+	//return 0;
+
+
+	testBdlTree();
+	
+	printf("-- Completed!\n");
+	return 0;
+}
 
 void drawTree(const TreeNode<int>* root)
 {
@@ -34,77 +72,53 @@ std::vector<int> get_random_arr(int arr_len, int max_val)
 	return numbers;
 }
 
-void testSimpleAdding()
+void testRBIntTree()
 {
-	printf(" ==== testSimpleAdding start...\n");
-	auto root = std::make_shared<BinaryTree>(10);
-	//root->addData(16);
-	root->addData(5);
-	root->addData(7);
-	root->addData(16);
-	root->addData(3);
-	root->addData(13);
-	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+	printf("==== testRBIntTree - start...\n");
 
-	//root->printNodes(); printf("\n");
-	drawTree(root.get());
+	RBIntTree rbtree(12);
+	/*
+	rbtree.add(10);
+	rbtree.add(7);
+	rbtree.add(6);
+	rbtree.add(5);
+	rbtree.add(4);
+	rbtree.add(3);
+	rbtree.add(2);
+	rbtree.add(1);
+	*/
+	rbtree.add(15);
+	rbtree.add(18);
 
-	{
-		printf(" ~~ MyBinTree experiment start...\n");
-		MyBinTree mbt(root.get());
-		mbt.Dump();
+	rbtree.add(10);
+	rbtree.add(22);
+	rbtree.add(6);
+	rbtree.add(9);
+	rbtree.add(13);
+	rbtree.add(2);
+	rbtree.add(1);
 
-		printf(" ~~ MyBinTree experiment done.\n");
-	}
-
-	//drawNodeTree(root.get(), 2);
-
-	printf("==== testSimpleAdding done!\n");
+	int depth = rbtree.root()->max_deepness();
+	drawNodeTree<int>(rbtree.root(), 3);
+	printf(" ~~~~ testRBIntTree(depth=%d): iterateTreeNodesDF..\n", depth);
+	iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n) {
+		auto rbn = (const RBIntNode&)n;
+		char cc = rbn.color() == RBColor::Black ? 'B' : rbn.color() == RBColor::Red ? 'R' : '?';
+		printf("%d(%c),", rbn.data(), cc);
+							});
+	printf("\niterateTreeNodesBF..\n");
+	iterateTreeNodesBF<int>(rbtree.root(), [](const TreeNode<int>& n) {
+		auto rbn = (const RBIntNode&)n;
+		char cc = rbn.color() == RBColor::Black ? 'B' : rbn.color() == RBColor::Red ? 'R' : '?';
+		printf("%d(%c),", rbn.data(), cc);
+							});
+	printf("\n");
+	printf("====  testRBIntTree - Done!\n");
 }
 
-void testRotating()
+void testAvlTree()
 {
-	printf(" ==== testRotating start...\n");
-	auto root = std::make_shared<BinaryTree>(10);
-	
-	root->addData(11);
-	root->addData(9);
-	root->addData(8);
-
-	root->addData(7); 
-	//root->printNodes(); printf("\n");
-	drawTree(root.get());
-
-	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
-
-	printf(" ~~ rotateLeft(root)...\n");
-	root = BinaryTree::rotateLeft(root);
-	//root->printNodes(); printf("\n");
-	drawTree(root.get());
-
-	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
-
-	auto llnode = root->left()->left();
-	printf(" ~~ rotateLeftLeftChild(data=%d) - rotateRight...\n", llnode->data());
-	bool rotatedOk = root->left()->rotateLeftChildRight();
-	//root->printNodes(); printf("\n");
-	drawTree(root.get());
-
-	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
-
-	printf(" ~~ rotateRight(root)...\n");
-	root = BinaryTree::rotateRight(root);
-	//root->printNodes(); printf("\n");
-	drawTree(root.get());
-
-	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
-
-	printf("==== testRotate0 done!\n");
-}
-
-void testNewAvlTree()
-{
-	printf(" ==== testNewAvlTree start...\n");
+	printf(" ==== testAvlTree start...\n");
 	//std::vector<int> numbers{ 0, 2, 8, 1, 6, 4,  };
 	//std::vector<int> numbers{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 	//std::vector<int> numbers{ 0, 1, 2,  4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
@@ -127,14 +141,14 @@ void testNewAvlTree()
 		drawNodeTree(avlTree.root(), 2);
 		printf(" !! Adding completed(NumItems=%d)\n", numItems);
 	}
-	printf("==== testNewAvlTree done!\n");
+	printf("==== testAvlTree done!\n");
 }
 
 
 
-void testAddingAVL()
+void testBdlTree()
 {
-	printf(" ==== testAddingAVL start...\n");
+	printf(" ==== testBdlTree start...\n");
 
 	//std::vector<int> numbers{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 	//std::vector<int> numbers{ 0, 92, 1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14 };
@@ -164,14 +178,6 @@ void testAddingAVL()
 		printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
 		drawNodeTree(root.get(), 2);
 
-		{
-			printf(" ~~ MyBinTree experiment start...\n");
-			MyBinTree mbt(root.get());
-			mbt.Dump();
-
-			printf(" ~~ MyBinTree experiment done.\n");
-		}
-
 		printf(" ~~ Iterate nodes(Depth-First): \n");
 		iterateTreeNodesDF<int>(root.get(), [](auto& nd) { printf("%d, ", nd.data()); });
 		printf("\n");
@@ -180,27 +186,77 @@ void testAddingAVL()
 		printf("\n");
 	}	
 
-	printf("==== testAddingAVL done!\n");
+	printf("==== testBdlTree done!\n");
 }
 
-int main()
+#ifdef TEST_LEGACY_TREES
+
+void testBinaryTreeAdding()
 {
-	printf("-- BinaryTree Test program...\n");
+	printf(" ==== testBinaryTreeAdding start...\n");
+	auto root = std::make_shared<BinaryTree>(10);
+	//root->addData(16);
+	root->addData(5);
+	root->addData(7);
+	root->addData(16);
+	root->addData(3);
+	root->addData(13);
+	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
 
-	test_rbint_tree();
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
 
-	testNewAvlTree();
-	//return 0;
+	{
+		printf(" ~~ MyBinTree experiment start...\n");
+		MyBinTree mbt(root.get());
+		mbt.Dump();
 
-/*
-	testSimpleAdding();
-	testRotating();
+		printf(" ~~ MyBinTree experiment done.\n");
+	}
 
-	test_bst_tree();
-	test_bin_tree();
+	//drawNodeTree(root.get(), 2);
 
-	testAddingAVL();
-	*/
-	printf("-- Completed!\n");
-	return 0;
+	printf("==== testBinaryTreeAdding done!\n");
 }
+
+void testBinaryTreeRotating()
+{
+	printf(" ==== testBinaryTreeRotating start...\n");
+	auto root = std::make_shared<BinaryTree>(10);
+
+	root->addData(11);
+	root->addData(9);
+	root->addData(8);
+
+	root->addData(7);
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
+	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+	printf(" ~~ rotateLeft(root)...\n");
+	root = BinaryTree::rotateLeft(root);
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
+	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+	auto llnode = root->left()->left();
+	printf(" ~~ rotateLeftLeftChild(data=%d) - rotateRight...\n", llnode->data());
+	bool rotatedOk = root->left()->rotateLeftChildRight();
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
+	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+	printf(" ~~ rotateRight(root)...\n");
+	root = BinaryTree::rotateRight(root);
+	//root->printNodes(); printf("\n");
+	drawTree(root.get());
+
+	printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+	printf("==== testBinaryTreeRotating done!\n");
+}
+
+#endif
