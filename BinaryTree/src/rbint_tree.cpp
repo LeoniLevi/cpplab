@@ -91,8 +91,8 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
     //// Grandparent is BLACK
 
     RBIntNode* uncle
-        = gparent->left() == parent ? gparent->right()
-        : gparent->right() == parent ? gparent->left()
+        = gparent->nleft() == parent ? gparent->nright()
+        : gparent->nright() == parent ? gparent->nleft()
         : 0;
 
 
@@ -181,21 +181,20 @@ RBIntNode* RBIntNode::rotateLeft()
 {
     rassert(right_, "RBIntNode::rotateLeft - right is absent");
 
-
-    RBIntNode* upNode = right();
+    RBIntNode* upNode = right_;
     RBIntNode* downNode = this;
 
     RBIntNode* parentNode = downNode->parent_;
     if (parentNode) {
-        if (parentNode->left() == this)
+        if (parentNode->left_ == this)
             parentNode->left_ = upNode;
-        else if (parentNode->right() == this)
+        else if (parentNode->right_ == this)
             parentNode->right_ = upNode;
         else
             err_exit("RBIntNode::rotateLeft - node is not a child of parent");
     }
 
-    RBIntNode* upNodeOldLeft = upNode->left();
+    RBIntNode* upNodeOldLeft = upNode->left_;
 
     upNode->parent_ = parentNode;
     upNode->left_ = downNode;
@@ -211,12 +210,12 @@ RBIntNode* RBIntNode::rotateRight()
     rassert(left_, "RBIntNode::rotateRight - left is absent");
 
 
-    RBIntNode* upNode = left();
+    RBIntNode* upNode = left_;
     RBIntNode* downNode = this;
 
     RBIntNode* parentNode = downNode->parent_;
     if (parentNode) {
-        if (parentNode->left() == this)
+        if (parentNode->left_ == this)
             parentNode->left_ = upNode;
         else if (parentNode->right() == this)
             parentNode->right_ = upNode;
@@ -224,7 +223,7 @@ RBIntNode* RBIntNode::rotateRight()
             err_exit("RBIntNode::rotateRight - node is not a child of parent");
     }
 
-    RBIntNode* upNodeOldRight = upNode->right();
+    RBIntNode* upNodeOldRight = upNode->right_;
 
     upNode->parent_ = parentNode;
     upNode->right_ = downNode;

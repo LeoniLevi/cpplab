@@ -27,8 +27,8 @@ public:
     RBColor color() const { return color_; }
 
     RBIntNode* parent() { return parent_; }
-    RBIntNode* left() { return left_; }
-    RBIntNode* right() { return right_; }
+    RBIntNode* nleft() { return left_; }
+    RBIntNode* nright() { return right_; }
 
     void setColor(RBColor color) { color_ = color; }
 
