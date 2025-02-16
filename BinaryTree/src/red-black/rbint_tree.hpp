@@ -1,14 +1,8 @@
 #pragma once
 
-
+#include "rb_common.hpp"
 #include "tree_node.hpp"
 #include <memory>
-
-
-enum class RBColor {
-    Black = 0,
-    Red = 1,
-};
 
 class RBIntNode : public TreeNode<int> 
 {

@@ -2,6 +2,7 @@
 #include "avl/bdl_tree.hpp"
 #include "avl/avl_tree.hpp"
 #include "red-black/rbint_tree.hpp"
+#include "red-black/rbq_int_tree.hpp"
 
 //#define TEST_LEGACY_TREES
 #ifdef TEST_LEGACY_TREES
@@ -17,6 +18,7 @@
 void testBinaryTreeAdding();
 void testBinaryTreeRotating();
 
+void testRBQIntTree();
 void testRBIntTree();
 void testAvlTree();
 void testBdlTree();
@@ -34,6 +36,7 @@ int main()
 	test_bin_tree();
 #endif
 
+	testRBQIntTree();
 	testRBIntTree();
 
 	testAvlTree();
@@ -70,6 +73,24 @@ std::vector<int> get_random_arr(int arr_len, int max_val)
 		numbers.push_back(num);
 	}
 	return numbers;
+}
+
+void testRBQIntTree()
+{
+	printf("==== testRBQIntTree - start...\n");
+
+	RBQIntTree rbtree(12);
+
+	rbtree.add(10);
+	rbtree.add(7);
+	//rbtree.add(6);
+
+	int depth = rbtree.root()->max_deepness();
+	drawNodeTree<int>(rbtree.root(), 3);
+	printf(" ~~~~ testRBQIntTree(depth=%d)\n", depth);
+
+	printf("====  testRBIntTree - Done!\n");
+
 }
 
 void testRBIntTree()
