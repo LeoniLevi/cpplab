@@ -21,7 +21,8 @@ inline void rassert(bool condition, const char* errmsg)
 RBQIntTree::RBQIntTree(int rootValue) //: root_(new RBQIntNode(rootValue, RBColor::Black))
     : sentinel_(0, RBColor::Black)
 {
-    sentinel_.addChild(rootValue);
+    RBQIntNode* root = sentinel_.addChild(rootValue);
+    root->setColor(RBColor::Black);
 }
 
 void RBQIntTree::add(int value) { 
@@ -43,11 +44,14 @@ void RBQIntTree::fixTreeForNode(RBQIntNode* node)
 
     //// Parent is RED
 
+    if (parent->isRoot())
+        return;
+    
     RBQIntNode* gparent = parent->parent();
     if (!gparent)
         return;
         //err_exit("RBQIntTree::fixTreeForNode - no grandparent(when parent is RED)");
-
+        
     rassert(gparent->color() == RBColor::Black, "RBQIntTree::fixTreeForNode - no grandparent(when parent is RED)");
 
 

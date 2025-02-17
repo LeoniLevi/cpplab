@@ -38,6 +38,7 @@ public:
     RBQIntNode* rotateRight00();
     //RBIntNode* addChild(int value, RBColor color);
     RBQIntNode* addChild(int value);
+    bool isRoot() const { return parent_ && parent_->parent_ == 0; }
 private:
     int value_;
     RBColor color_;
