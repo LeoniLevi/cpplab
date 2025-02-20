@@ -75,6 +75,16 @@ std::vector<int> get_random_arr(int arr_len, int max_val)
 	return numbers;
 }
 
+void drawRbqDF(RBQIntTree& rbtree)
+{
+	iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n) {
+		auto rbn = (const RBIntNode&)n;
+		char cc = rbn.color() == RBColor::Black ? 'B' : rbn.color() == RBColor::Red ? 'R' : '?';
+		printf("%d(%c),", rbn.data(), cc);
+	});
+	printf("\n---------------\n");
+}
+
 void testRBQIntTree()
 {
 	printf("==== testRBQIntTree - start...\n");
@@ -82,12 +92,34 @@ void testRBQIntTree()
 	RBQIntTree rbtree(12);
 
 	rbtree.add(10);
+	drawNodeTree<int>(rbtree.root(), 3);
+	drawRbqDF(rbtree);
+
 	rbtree.add(7);
+	drawNodeTree<int>(rbtree.root(), 3);
+	drawRbqDF(rbtree);
+
+
 	rbtree.add(6);
+	drawNodeTree<int>(rbtree.root(), 3);
+	drawRbqDF(rbtree);
+
 	rbtree.add(5);
+	drawNodeTree<int>(rbtree.root(), 3);
+	drawRbqDF(rbtree);
+
 	rbtree.add(4);
+	drawNodeTree<int>(rbtree.root(), 3);
+	drawRbqDF(rbtree);
+
 	rbtree.add(3);
+	drawNodeTree<int>(rbtree.root(), 3);
+	drawRbqDF(rbtree);
+
 	rbtree.add(2);
+	drawNodeTree<int>(rbtree.root(), 3);
+	drawRbqDF(rbtree);
+
 	rbtree.add(1);
 
 	int depth = rbtree.root()->max_deepness();

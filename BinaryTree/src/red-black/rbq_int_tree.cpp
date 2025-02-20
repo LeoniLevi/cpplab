@@ -63,17 +63,17 @@ void RBQIntTree::fixTreeForNode(RBQIntNode* node)
         : 0;
 
 
-    //bool gparentIsRoot = gparent == root();
+    bool gparentIsRoot = gparent->isRoot();
 
     RBColor uncleColor = uncle ? uncle->color() : RBColor::Black;
 
     if (uncleColor == RBColor::Red) {
         parent->setColor(RBColor::Black);
         uncle->setColor(RBColor::Black);
-        //if (!gparentIsRoot) {
+        if (!gparentIsRoot) {
             gparent->setColor(RBColor::Red);
             fixTreeForNode(gparent);
-        //}
+        }
         return;
     }
 
