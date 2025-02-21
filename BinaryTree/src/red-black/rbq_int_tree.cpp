@@ -1,7 +1,5 @@
 #include "rbq_int_tree.hpp"
 
-#include <stdexcept>
-
 inline void err_exit(const char* errmsg) 
 {
     printf(" !! ERROR(R-ABORT): %s\n", errmsg);
@@ -82,11 +80,8 @@ void RBQIntTree::fixTreeForNode(RBQIntNode* node)
 
     if (gparent->left() == parent && parent->left() == node) { // LeftLeft case
         RBQIntNode* newGParent = gparent->rotateRight();
-        /*
-        if (gparentIsRoot) {
-            root_ = newGParent;
-        }
-        */
+        rassert(newGParent->color() == RBColor::Red, "RBQIntTree::fixTreeForNode(LL) - new grandparent isn't RED");
+
         parent->setColor(RBColor::Black);
         gparent->setColor(RBColor::Red);
     }
@@ -94,22 +89,14 @@ void RBQIntTree::fixTreeForNode(RBQIntNode* node)
         RBQIntNode* newParent = parent->rotateLeft();
         RBQIntNode* newGParent = gparent->rotateRight();
         rassert(newGParent->color() == RBColor::Red, "RBQIntTree::fixTreeForNode(LR) - new grandparent isn't RED");
-        /*
-        if(gparentIsRoot) {
-            root_ = newGParent;
-        }
-        */
+        
         node->setColor(RBColor::Black);
         gparent->setColor(RBColor::Red);
     }
     else if (gparent->right() == parent && parent->right() == node) { // RightRight case
         RBQIntNode* newGParent = gparent->rotateLeft();
         rassert(newGParent->color() == RBColor::Red, "RBQIntTree::fixTreeForNode(RR) - new grandparent isn't RED");
-        /*
-        if (gparentIsRoot) {
-            root_ = newGParent;
-        }
-        */
+        
         newGParent->setColor(RBColor::Black);
         gparent->setColor(RBColor::Red);
     }
@@ -117,11 +104,7 @@ void RBQIntTree::fixTreeForNode(RBQIntNode* node)
         RBQIntNode* newParent = parent->rotateRight();
         RBQIntNode* newGParent = gparent->rotateLeft();
         rassert(newGParent->color() == RBColor::Red, "RBQIntTree::fixTreeForNode(RL) - new grandparent isn't RED");
-        /*
-        if (gparentIsRoot) {
-            root_ = newGParent;
-        }
-        */
+        
         node->setColor(RBColor::Black);
         gparent->setColor(RBColor::Red);
     }
@@ -169,17 +152,22 @@ RBQIntNode* RBQIntNode::rotateLeft()
         err_exit("RBQIntNode::rotateLeft - node has parent but not its child");
 
     auto downUptr = isLeftChild ? std::move(parentNode->left_) : std::move(parentNode->right_);
-
     auto upUptr = std::move(this->right_);
+
+    upUptr->parent_ = parentNode;
+    downUptr->parent_ = upUptr.get();
+
     downUptr->right_ = std::move(upUptr->left_);
     upUptr->left_ = std::move(downUptr);
+
+    auto upPtr = upUptr.get();
 
     if (isLeftChild)
         parentNode->left_  = std::move(upUptr);
     else
         parentNode->right_ = std::move(upUptr);
 
-    return upUptr.get();
+    return upPtr;
 }
 
 RBQIntNode* RBQIntNode::rotateRight()
@@ -195,151 +183,24 @@ RBQIntNode* RBQIntNode::rotateRight()
         err_exit("RBQIntNode::rotateRight - node has parent but not its child");
 
     auto downUptr = isLeftChild ? std::move(parentNode->left_) : std::move(parentNode->right_);
-
     auto upUptr = std::move(this->left_);
+
+    upUptr->parent_ = parentNode;
+    downUptr->parent_ = upUptr.get();
+
     downUptr->left_ = std::move(upUptr->right_);
     upUptr->right_ = std::move(downUptr);
+
+    auto upPtr = upUptr.get();
+
     if (isLeftChild)
         parentNode->left_ = std::move(upUptr);
     else
         parentNode->right_ = std::move(upUptr);
 
-    return upUptr.get();
+    
+
+    return upPtr;
 }
 
 
-RBQIntNode* RBQIntNode::rotateLeft00()
-{
-    rassert((bool)right_, "RBQIntNode::rotateLeft - right is absent");
-
-    RBQIntNode* downNode = this;
-    RBQIntNode* upNode = this->right_.get();
-    RBQIntNode* parentNode = this->parent_;
-
-   
-
-    if (parentNode) {
-        if (parentNode->left() == this) {
-            auto oldDownNodeRight = std::move(downNode->right_);
-            downNode->right_ = std::move(upNode->left_);
-
-            upNode->left_ = std::move(parentNode->left_);
-            parentNode->left_ = std::move(oldDownNodeRight);
-
-            upNode->parent_ = parentNode;
-            downNode->parent_ = upNode;
-        }
-        else if (parentNode->right() == this) {
-            auto oldDownNodeRight = std::move(downNode->right_);
-            downNode->right_ = std::move(upNode->left_);
-
-            upNode->left_ = std::move(parentNode->right_);
-            parentNode->right_ = std::move(oldDownNodeRight);
-
-            upNode->parent_ = parentNode;
-            downNode->parent_ = upNode;
-        }
-        else {
-            err_exit("RBQIntNode::rotateLeft - node has parent but not its child");
-        }
-    }
-
-
-
-    
-    
-    /*
-    
-    if (parentNode) {
-        if (parentNode->left() == this)
-            parentNode->left_ = upNode;
-        else if (parentNode->right() == this)
-            parentNode->right_ = upNode;
-        else
-            err_exit("RBQIntNode::rotateLeft - node is not a child of parent");
-    }
-    */
-    /*
-    RBQIntNode* upNodeOldLeft = upNode->left_;
-
-    upNode->parent_ = parentNode;
-    upNode->left_ = downNode;
-
-    downNode->parent_ = upNode;
-    downNode->right_ = upNodeOldLeft;
-    */
-    return upNode;
-}
-
-RBQIntNode* RBQIntNode::rotateRight00()
-{
-    rassert((bool)left_, "RBQIntNode::rotateRight - left is absent");
-
-    RBQIntNode* downNode = this;
-    RBQIntNode* upNode = this->left_.get();
-    RBQIntNode* parentNode = this->parent_;
-
-    if (parentNode) {
-        if (parentNode->left() == this) {
-            auto oldDownNodeLeft = std::move(downNode->left_);
-            downNode->left_ = std::move(upNode->right_);
-
-            upNode->right_ = std::move(parentNode->left_);
-            parentNode->left_ = std::move(oldDownNodeLeft);
-
-            upNode->parent_ = parentNode;
-            downNode->parent_ = upNode;
-        }
-        else if (parentNode->right() == this) {
-            auto oldDownNodeLeft = std::move(downNode->left_);
-            downNode->left_ = std::move(upNode->right_);
-
-            upNode->left_ = std::move(parentNode->right_);
-            parentNode->right_ = std::move(oldDownNodeLeft);
-
-            upNode->parent_ = parentNode;
-            downNode->parent_ = upNode;
-        }
-        else {
-            err_exit("RBQIntNode::rotateRight - node has parent but not its child");
-        }
-    }
-    else {
-        //??
-    }
-
-
-    /*
-
-    RBQIntNode* downNode = this;
-    RBQIntNode* upNode = right_.get();
-    RBQIntNode* parentNode = this->parent_;
-
-
-    RBQIntNode* upNode = left_;
-    RBQIntNode* downNode = this;
-
-    RBQIntNode* parentNode = downNode->parent_;
-    if (parentNode) {
-        if (parentNode->left_ == this)
-            parentNode->left_ = upNode;
-        else if (parentNode->right() == this)
-            parentNode->right_ = upNode;
-        else
-            err_exit("RBQIntNode::rotateRight - node is not a child of parent");
-    }
-
-    RBQIntNode* upNodeOldRight = upNode->right_;
-
-    upNode->parent_ = parentNode;
-    upNode->right_ = downNode;
-
-    downNode->parent_ = upNode;
-    downNode->left_ = upNodeOldRight;
-    */
-    return upNode;
-}
-
-
-
- 
