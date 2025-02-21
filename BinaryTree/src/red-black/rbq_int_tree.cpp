@@ -124,11 +124,9 @@ RBQIntNode* RBQIntNode::addChild(int value)
         if (left_) {
             return left_->addChild(value);
         }
-        //left_ = new RBQIntNode(value, RBColor::Red);
         left_ = std::make_unique<RBQIntNode>(value, RBColor::Red);
         left_->parent_ = this;   
         return left_.get();
-        //return left_;
     }
     else {
         if (right_) {
@@ -196,9 +194,7 @@ RBQIntNode* RBQIntNode::rotateRight()
     if (isLeftChild)
         parentNode->left_ = std::move(upUptr);
     else
-        parentNode->right_ = std::move(upUptr);
-
-    
+        parentNode->right_ = std::move(upUptr);    
 
     return upPtr;
 }
