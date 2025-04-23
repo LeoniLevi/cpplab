@@ -16,9 +16,16 @@
 
 void split_by_first(int items[], size_t beginIdx, size_t endIdx, size_t* last_less_eq_idx);
 void myqsort_old(int* items, size_t beginIdx, size_t endIdx);
+void myqsort1(int* items, size_t beginIdx, size_t endIdx);
 
 
 //----------------
+void myqsort(int arr[], int len)
+{
+	myqsort1(arr, 0, len);
+}
+
+//--------------
 
 void myqsort1(int* items, size_t beginIdx, size_t endIdx)
 {
