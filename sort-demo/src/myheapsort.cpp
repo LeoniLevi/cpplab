@@ -46,13 +46,13 @@ void heapify(int arr[], int len)
     }
 }
 
-void myheapsort(int arr[], int len)
+void myheapsort(int items[], int len)
 {
-    heapify(arr, len);
+    heapify(items, len);
     int nlen = len;
     while (nlen > 1) {
-        std::swap(arr[0], arr[nlen - 1]);
-        siftDown(arr, nlen - 1, 0);
+        std::swap(items[0], items[nlen - 1]);
+        siftDown(items, nlen - 1, 0);
         nlen -= 1;
     }
 }

@@ -24,11 +24,7 @@ int main()
 
 	test_mymergesort();
 
-	bool run_myqsort = true;
-	if (run_myqsort) {
-		test_myqsort();
-		puts(" ~~ test_myqsort: done");
-	}
+	test_myqsort();
 
 	printf("====== program 'sort-demo': Completed! To exit - click <Enter>:\n");
     {char dummy[32]; fgets(dummy, sizeof dummy, stdin); }

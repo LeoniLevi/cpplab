@@ -1,5 +1,5 @@
 #pragma once
 
-void myheapsort(int arr[], int len);
+void myheapsort(int items[], int len);
 //--------------
 void test_myheapsort();
