@@ -71,7 +71,7 @@ void test_mymergesort()
 	printf(" ~~ source array:\n");
 	print_ints(myvect.data(), myvect.size());
 
-	mymergesort(myvect.data(), myvect.size());
+	mymergesort(myvect.data(), (int) myvect.size());
 
 	printf(" ~~ after my_merge_sort_arr:\n");
 	print_ints(myvect.data(), myvect.size());
