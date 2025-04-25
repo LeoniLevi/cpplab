@@ -24,12 +24,33 @@ add_executable(runTests test/mysort-test.cpp)
 target_include_directories(runTests PRIVATE src ../googletest/googletest/include)
 target_link_libraries(runTests mysort gtest)
 
+
+# Add Doctest as a dependency
+include(FetchContent)
+FetchContent_Declare(
+    doctest
+    GIT_REPOSITORY https://github.com/doctest/doctest.git
+    GIT_TAG v2.4.11 # Use the latest stable version
+)
+FetchContent_MakeAvailable(doctest)
+
+add_executable(runDoctests test/mysort-doctest.cpp)
+target_include_directories(runDoctests PRIVATE src)
+target_link_libraries(runDoctests mysort doctest::doctest)
+
+
 enable_testing()
 
 # Add tests
 add_test(NAME MyTests COMMAND runTests)
 
 add_custom_command(TARGET runTests
+                   POST_BUILD
+                   COMMAND ctest -C $<CONFIGURATION> --output-on-failure)
+
+add_test(NAME MyDoctests COMMAND runDoctests)
+
+add_custom_command(TARGET runDoctests
                    POST_BUILD
                    COMMAND ctest -C $<CONFIGURATION> --output-on-failure)
 
