@@ -13,9 +13,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(BinaryTree)
 #add_subdirectory(expr-demo)
-add_subdirectory(sort-demo)
 
 message(" ~~ CMAKE_CXX_COMPILE_FEATURES: ${CMAKE_CXX_COMPILE_FEATURES}")
 if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)
     add_subdirectory(cpp20-demo)
 endif()
+
+
+add_subdirectory(sort-demo)
