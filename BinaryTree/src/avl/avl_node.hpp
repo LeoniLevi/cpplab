@@ -17,6 +17,8 @@ public:
     static void addNode(AvlNode<T>* parent, AvlNode<T>* newNode);
     static AvlNode<T>* provideNodeBalance(AvlNode<T>* node);
 
+    static AvlNode<T>* searchNode(AvlNode<T>* parent, T value);
+
     bool check_depths() const;
 
 private:
@@ -75,6 +77,21 @@ void AvlNode<T>::addNode(AvlNode<T>* parent, AvlNode<T>* newNode) {
         if (parent->depth_ <= parent->right_->depth_)
             parent->depth_ = parent->right_->depth_ + 1;
     }
+}
+
+
+// static
+template<typename T>
+AvlNode<T>* AvlNode<T>::searchNode(AvlNode<T>* parent, T value)
+{
+    T nodeValue = parent->data();
+    if (nodeValue == value)
+        return parent;
+    if (value < nodeValue && parent->left_)
+        return searchNode(parent->left_, value);
+    if (value > nodeValue && parent->right_)
+        return searchNode(parent->right_, value);
+    return nullptr;
 }
 
 template<typename T>

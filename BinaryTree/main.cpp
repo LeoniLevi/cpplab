@@ -184,15 +184,16 @@ void testAvlTree()
 {
 	printf(" ==== testAvlTree start...\n");
 	//std::vector<int> numbers{ 0, 2, 8, 1, 6, 4,  };
-	//std::vector<int> numbers{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+	std::vector<int> numbers{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 	//std::vector<int> numbers{ 0, 1, 2,  4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-	std::vector<int> numbers = get_random_arr(24, 99);
-
+	//std::vector<int> numbers = get_random_arr(24, 99);
+	int val0 = 6;
+	int val1 = 43;
 
 	printf(" ~~ addDataAVL ...\n");
 	{
 		AvlTree<int> avlTree;
-		int numItems = 19;
+		int numItems = numbers.size() > 19 ? 19 : numbers.size();
 		for (int i = 0; i < numItems; ++i) {
 			avlTree.addValue(numbers[i]);
 			
@@ -204,7 +205,19 @@ void testAvlTree()
 		}
 		drawNodeTree(avlTree.root(), 2);
 		printf(" !! Adding completed(NumItems=%d)\n", numItems);
+
+		auto node0 = avlTree.search(val0);
+		auto node1 = avlTree.search(val1);
+		if (node0)
+			assert(node0->data() == val0);
+		if (node1)
+			assert(node1->data() == val1);
 	}
+
+	
+
+
+
 	printf("==== testAvlTree done!\n");
 }
 

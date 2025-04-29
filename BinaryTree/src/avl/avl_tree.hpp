@@ -10,6 +10,7 @@ public:
     ~AvlTree();
     AvlNode<T>* root() {return root_;}
     void addValue(T val);
+    AvlNode<T>* search(T val);
     int NumCreated = 0;
     int NumDestroyed = 0;
 private:
@@ -36,5 +37,10 @@ void AvlTree<T>::addValue(T val) {
     AvlNode<T>* newParentNode = AvlNode<T>::provideNodeBalance(root_);
     if (newParentNode != root_)
         root_ = newParentNode;
+}
+
+template<typename T>
+AvlNode<T>* AvlTree<T>::search(T val) {
+    return root_ ? AvlNode<T>::searchNode(root_, val) : nullptr;
 }
 
