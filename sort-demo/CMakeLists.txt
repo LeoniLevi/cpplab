@@ -22,7 +22,7 @@ target_link_libraries(sort_demo mysort)
 
 # Add tests
 
-
+#[[
 #next line: build googletest with dynamically-linked Runtime
 set(gtest_force_shared_crt ON CACHE BOOL "Always use msvcrt.dll" )
 
@@ -74,3 +74,5 @@ add_test(NAME MyCatch2tests COMMAND runCatch2tests)
 add_custom_command(TARGET runCatch2tests
                    POST_BUILD
                    COMMAND ctest -C $<CONFIGURATION> --output-on-failure)
+
+]]
