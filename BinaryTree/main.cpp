@@ -36,6 +36,9 @@ int main()
 	test_bin_tree();
 #endif
 
+	testAvlTree();
+	return 0;
+
 	testRBQIntTree();
 	//return 0;
 	testRBIntTree();
@@ -183,10 +186,11 @@ void testRBIntTree()
 void testAvlTree()
 {
 	printf(" ==== testAvlTree start...\n");
+	//std::vector<int> numbers{ 1, 2, 3 };
 	//std::vector<int> numbers{ 0, 2, 8, 1, 6, 4,  };
-	std::vector<int> numbers{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+	//std::vector<int> numbers{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
 	//std::vector<int> numbers{ 0, 1, 2,  4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
-	//std::vector<int> numbers = get_random_arr(24, 99);
+	std::vector<int> numbers = get_random_arr(24, 99);
 	int val0 = 6;
 	int val1 = 43;
 
@@ -195,6 +199,7 @@ void testAvlTree()
 		AvlTree<int> avlTree;
 		int numItems = numbers.size() > 19 ? 19 : numbers.size();
 		for (int i = 0; i < numItems; ++i) {
+			//avlTree.addValue(numbers[i]);
 			avlTree.addValue(numbers[i]);
 			
 			//printf("!!=== Added N=%d:\n", numbers[i]);
@@ -203,6 +208,8 @@ void testAvlTree()
 			bool bres = avlTree.root()->check_depths();
 			assert(bres);			
 		}
+		std::string stree = treeNodeToString(avlTree.root());
+		printf(" ~~ STree: %s\n", stree.c_str());
 		drawNodeTree(avlTree.root(), 2);
 		printf(" !! Adding completed(NumItems=%d)\n", numItems);
 

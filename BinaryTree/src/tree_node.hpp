@@ -6,6 +6,7 @@
 #include <functional>
 #include <queue>
 
+#include <sstream>
 
 enum class DepthBalanceStatus {
     Ok = 0,
@@ -21,9 +22,6 @@ public:
     virtual T data() const = 0;
     virtual const TreeNode<T>* left() const = 0;
     virtual const TreeNode<T>* right() const = 0;
-
-    //virtual void set_left(TreeNode* node) {throw;};
-    //virtual void set_right(TreeNode* node) {throw;};
 
     int max_deepness() const {
         const int left_dps = left() ? left()->max_deepness() : 0;
@@ -70,6 +68,29 @@ void iterateTreeNodesBF(const TreeNode<T>* treeNode,
         if (node->right())
             nq.push(node->right());            
     }
+}
+
+template <typename T>
+std::string treeNodeToString(const TreeNode<T>* node, int level=-1)
+{
+    if (!node)
+        return std::string();
+
+    // set left/right delimiter - various if level >= 0
+    int nextLevel = level;
+    char ldelim = '(';
+    char rdelim = ')';
+    if (level > -1) {
+        int nm = level % 3;
+        ldelim = nm == 0 ? '(' : nm == 1 ? '[' : '<';
+        rdelim = nm == 0 ? ')' : nm == 1 ? ']' : '>';
+    }
+
+    std::stringstream ss;
+    ss << ldelim << treeNodeToString(node->left(), nextLevel)
+       << ' ' << node->data() << ' ' 
+       << treeNodeToString(node->right(), nextLevel) << rdelim;
+    return ss.str();
 }
 
 template<typename T>

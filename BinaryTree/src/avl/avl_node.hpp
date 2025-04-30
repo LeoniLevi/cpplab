@@ -3,6 +3,8 @@
 #include "tree_node.hpp"
 #include <assert.h>
 
+#undef ENABLE_OBSOLETE
+
 template<typename T>
 class AvlNode : public TreeNode<T> {
 public:
@@ -14,12 +16,17 @@ public:
     static AvlNode<T>* create(T value, int& counter);
     static void destroy(AvlNode<T>* node, int& counter);
 
-    static void addNode(AvlNode<T>* parent, AvlNode<T>* newNode);
+    static AvlNode<T>* searchNode(AvlNode<T>* parent, T value);
+    
+    static AvlNode<T>* addNode(AvlNode<T>* parent, AvlNode<T>* newNode);
     static AvlNode<T>* provideNodeBalance(AvlNode<T>* node);
 
-    static AvlNode<T>* searchNode(AvlNode<T>* parent, T value);
-
     bool check_depths() const;
+
+#ifdef ENABLE_OBSOLETE
+    static void addNode00(AvlNode<T>* parent, AvlNode<T>* newNode);
+    static AvlNode<T>* provideNodeBalance00(AvlNode<T>* node);
+#endif
 
 private:
     AvlNode(T val) : data_(val), left_(0), right_(0), depth_(0) {}
@@ -55,13 +62,15 @@ void AvlNode<T>::destroy(AvlNode<T>* node, int& counter) {
     delete node;
     ++counter;
 }
+
+
 // static
 template<typename T>
-void AvlNode<T>::addNode(AvlNode<T>* parent, AvlNode<T>* newNode) {
+AvlNode<T>* AvlNode<T>::addNode(AvlNode<T>* parent, AvlNode<T>* newNode) {
     T value = newNode->data();
     if (value <= parent->data()) {
         if (parent->left_)
-            addNode(parent->left_, newNode);
+            parent->left_ = addNode(parent->left_, newNode);
         else
             parent->left_ = newNode;
 
@@ -70,14 +79,16 @@ void AvlNode<T>::addNode(AvlNode<T>* parent, AvlNode<T>* newNode) {
     }
     else { // value > parent->data()
         if (parent->right_)
-            addNode(parent->right_, newNode);
+            parent->right_ = addNode(parent->right_, newNode);
         else
             parent->right_ = newNode;
 
         if (parent->depth_ <= parent->right_->depth_)
             parent->depth_ = parent->right_->depth_ + 1;
     }
+    return provideNodeBalance(parent);
 }
+
 
 
 // static
@@ -158,10 +169,58 @@ DepthBalanceStatus AvlNode<T>::getDepthBalanceStatus() const
 template<typename T>
 AvlNode<T>* AvlNode<T>::provideNodeBalance(AvlNode<T>* node)
 {
+    auto status = node->getDepthBalanceStatus();
+    switch (status) {
+    case DepthBalanceStatus::LeftLeft:
+        return rotateRight(node);
+    case DepthBalanceStatus::LeftRight:
+        node->left_ = rotateLeft(node->left_);
+        return rotateRight(node);
+    case DepthBalanceStatus::RightRight:
+        return rotateLeft(node);
+    case DepthBalanceStatus::RightLeft:
+        node->right_ = rotateRight(node->right_);
+        return rotateLeft(node);
+    default:
+        return node;
+    }
+}
+
+
+#ifdef ENABLE_OBSOLETE
+
+// static
+template<typename T>
+void AvlNode<T>::addNode00(AvlNode<T>* parent, AvlNode<T>* newNode) {
+    T value = newNode->data();
+    if (value <= parent->data()) {
+        if (parent->left_)
+            addNode00(parent->left_, newNode);
+        else
+            parent->left_ = newNode;
+
+        if (parent->depth_ <= parent->left_->depth_)
+            parent->depth_ = parent->left_->depth_ + 1;
+    }
+    else { // value > parent->data()
+        if (parent->right_)
+            addNode00(parent->right_, newNode);
+        else
+            parent->right_ = newNode;
+
+        if (parent->depth_ <= parent->right_->depth_)
+            parent->depth_ = parent->right_->depth_ + 1;
+    }
+}
+
+// static
+template<typename T>
+AvlNode<T>* AvlNode<T>::provideNodeBalance00(AvlNode<T>* node)
+{
     if (node->left_)
-        node->left_ = provideNodeBalance(node->left_);
+        node->left_ = provideNodeBalance00(node->left_);
     if (node->right_)
-        node->right_ = provideNodeBalance(node->right_);
+        node->right_ = provideNodeBalance00(node->right_);
     node->recalcDepth();
 
     auto status = node->getDepthBalanceStatus();
@@ -180,6 +239,8 @@ AvlNode<T>* AvlNode<T>::provideNodeBalance(AvlNode<T>* node)
         return node;
     }
 }
+
+#endif // ENABLE_OBSOLETE
 
 template<typename T>
 void AvlNode<T>::recalcDepth() {
