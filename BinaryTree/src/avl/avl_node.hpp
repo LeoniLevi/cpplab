@@ -17,11 +17,15 @@ public:
     static void destroy(AvlNode<T>* node, int& counter);
 
     static AvlNode<T>* searchNode(AvlNode<T>* parent, T value);
+    static AvlNode<T>* searchMinNode(AvlNode<T>* parent);
     
     static AvlNode<T>* addNode(AvlNode<T>* parent, AvlNode<T>* newNode);
     static AvlNode<T>* provideNodeBalance(AvlNode<T>* node);
 
+    static AvlNode<T>* deleteNodeByValue(AvlNode<T>* parent, T value);
+
     bool check_depths() const;
+    static void recalcNodeDepth(AvlNode<T>* node);
 
 #ifdef ENABLE_OBSOLETE
     static void addNode00(AvlNode<T>* parent, AvlNode<T>* newNode);
@@ -89,6 +93,63 @@ AvlNode<T>* AvlNode<T>::addNode(AvlNode<T>* parent, AvlNode<T>* newNode) {
     return provideNodeBalance(parent);
 }
 
+// static
+template<typename T>
+void AvlNode<T>::recalcNodeDepth(AvlNode<T>* node)
+{
+    if (!node->left_ && !node->right_)
+        node->depth_ = 0;
+    else if (node->left_ && !node->right_)
+        node->depth_ = node->left_->depth_ + 1;
+    else if (!node->left_ && node->right_)
+        node->depth_ = node->right_->depth_ + 1;
+    else { // if (node->left_ && node->right_) 
+        if (node->left_->depth_ >= node->right_->depth_)
+            node->depth_ = node->left_->depth_ + 1;
+        else
+            node->depth_ = node->left_->depth_ + 1;
+    }
+}
+
+//static 
+template<typename T>
+AvlNode<T>* AvlNode<T>::deleteNodeByValue(AvlNode<T>* node, T value)
+{
+    if (node->data_ == value) {
+        if (!node->left_ && !node->right_) {
+            delete node;
+            return nullptr;
+        }
+        else if (node->left_ && !node->right_) {
+            auto newNode = node->left_;
+            delete node;
+            return newNode;
+        }
+        else if (!node->left_ && node->right_) {
+            auto newNode = node->right_;
+            delete node;
+            return newNode;
+        }
+        // if (node->left_ && node->right_)
+        auto minNode = searchMinNode(node->right_);
+        node->data_ = minNode->data_;
+        node->right_ = deleteNodeByValue(node->right_, minNode->data_);
+        recalcNodeDepth(node);
+        return node;
+    }
+    if (value < node->data_) {
+        node->left_ = deleteNodeByValue(node->left_, value);
+        recalcNodeDepth(node);
+        return node;
+    }
+    //if (value > node->data_)
+    {
+        node->right_ = deleteNodeByValue(node->right_, value);
+        recalcNodeDepth(node);
+        return node;
+    }
+    
+}
 
 
 // static
@@ -104,6 +165,15 @@ AvlNode<T>* AvlNode<T>::searchNode(AvlNode<T>* parent, T value)
         return searchNode(parent->right_, value);
     return nullptr;
 }
+
+template<typename T>
+AvlNode<T>* AvlNode<T>::searchMinNode(AvlNode<T>* parent)
+{
+    if (parent->left_)
+        return searchMinNode(parent->left_);    
+    return parent;
+}
+
 
 template<typename T>
 AvlNode<T>* AvlNode<T>::rotateRight(AvlNode<T>* node) {
