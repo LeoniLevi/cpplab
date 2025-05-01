@@ -10,9 +10,8 @@ public:
     ~AvlTree();
     AvlNode<T>* root() {return root_;}
     void addValue(T val);
+    void deleteNodeByValue(T val);
     AvlNode<T>* search(T val);
-    int NumCreated = 0;
-    int NumDestroyed = 0;
 
 #ifdef ENABLE_OBSOLETE
     void addValue00(T val);
@@ -25,8 +24,7 @@ private:
 
 template<typename T>
 AvlTree<T>::~AvlTree() {
-    AvlNode<T>::destroy(root_, NumDestroyed);
-    printf(" ~~ AvlTree deallocated: NCreated=%d; NDestroy=%d\n", NumCreated, NumDestroyed);
+     AvlNode<T>::destroy(root_);
 }
 
 #ifdef ENABLE_OBSOLETE
@@ -49,11 +47,18 @@ void AvlTree<T>::addValue00(T val) {
 
 template<typename T>
 void AvlTree<T>::addValue(T val) {
-    AvlNode<T>* newNode = AvlNode<T>::create(val, NumCreated);
+    AvlNode<T>* newNode = AvlNode<T>::create(val);
     if (!root_)
         root_ = newNode;
     else
         root_ = AvlNode<T>::addNode(root_, newNode);
+}
+
+template<typename T>
+void AvlTree<T>::deleteNodeByValue(T val)
+{
+    if (root_)
+        AvlNode<T>::deleteNodeByValue(root_, val);
 }
 
 template<typename T>

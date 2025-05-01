@@ -12,20 +12,15 @@ public:
     const AvlNode<T>* left() const override { return left_; }
     const AvlNode<T>* right() const override { return right_; }
 
+    static AvlNode<T>* create(T value);
+    static void destroy(AvlNode<T>* node);
 
-    static AvlNode<T>* create(T value, int& counter);
-    static void destroy(AvlNode<T>* node, int& counter);
-
-    static AvlNode<T>* searchNode(AvlNode<T>* parent, T value);
-    static AvlNode<T>* searchMinNode(AvlNode<T>* parent);
-    
     static AvlNode<T>* addNode(AvlNode<T>* parent, AvlNode<T>* newNode);
-    static AvlNode<T>* provideNodeBalance(AvlNode<T>* node);
-
     static AvlNode<T>* deleteNodeByValue(AvlNode<T>* parent, T value);
+    static AvlNode<T>* searchNode(AvlNode<T>* parent, T value);
 
-    bool check_depths() const;
-    static void recalcNodeDepth(AvlNode<T>* node);
+    bool is_avl_valid() const;
+private:
 
 #ifdef ENABLE_OBSOLETE
     static void addNode00(AvlNode<T>* parent, AvlNode<T>* newNode);
@@ -35,11 +30,15 @@ public:
 private:
     AvlNode(T val) : data_(val), left_(0), right_(0), depth_(0) {}
     ~AvlNode() {}
-    void recalcDepth();
     static AvlNode<T>* rotateRight(AvlNode<T>* node);
     static AvlNode<T>* rotateLeft(AvlNode<T>* node);
-    DepthBalanceStatus getDepthBalanceStatus() const;
 
+    static AvlNode<T>* searchMinNode(AvlNode<T>* parent);
+    static AvlNode<T>* provideNodeBalance(AvlNode<T>* node);
+    static void recalcNodeDepth(AvlNode<T>* node);
+
+    void recalcDepth();
+    DepthBalanceStatus getDepthBalanceStatus() const;
     unsigned depth() const { return depth_; }
 
 private:
@@ -49,24 +48,21 @@ private:
     unsigned depth_;
 };
 
+//static 
+template<typename T>
+AvlNode<T>* AvlNode<T>::create(T value) {
+    return new AvlNode<T>(value);
+}
 
 //static 
 template<typename T>
-AvlNode<T>* AvlNode<T>::create(T value, int& counter) { 
-    ++counter; 
-    return new AvlNode<T>(value); 
-}
-//static 
-template<typename T>
-void AvlNode<T>::destroy(AvlNode<T>* node, int& counter) {
+void AvlNode<T>::destroy(AvlNode<T>* node) {
     if (node->left_)
-        destroy(node->left_, counter);
+        destroy(node->left_);
     if (node->right_)
-        destroy(node->right_, counter);
+        destroy(node->right_);
     delete node;
-    ++counter;
 }
-
 
 // static
 template<typename T>
@@ -117,17 +113,17 @@ AvlNode<T>* AvlNode<T>::deleteNodeByValue(AvlNode<T>* node, T value)
 {
     if (node->data_ == value) {
         if (!node->left_ && !node->right_) {
-            delete node;
+            destroy(node);
             return nullptr;
         }
         else if (node->left_ && !node->right_) {
             auto newNode = node->left_;
-            delete node;
+            destroy(node);
             return newNode;
         }
         else if (!node->left_ && node->right_) {
             auto newNode = node->right_;
-            delete node;
+            destroy(node);
             return newNode;
         }
         // if (node->left_ && node->right_)
@@ -147,10 +143,8 @@ AvlNode<T>* AvlNode<T>::deleteNodeByValue(AvlNode<T>* node, T value)
         node->right_ = deleteNodeByValue(node->right_, value);
         recalcNodeDepth(node);
         return node;
-    }
-    
+    }    
 }
-
 
 // static
 template<typename T>
@@ -256,6 +250,34 @@ AvlNode<T>* AvlNode<T>::provideNodeBalance(AvlNode<T>* node)
     }
 }
 
+template<typename T>
+void AvlNode<T>::recalcDepth() {
+    if (left_ && right_)
+        depth_ = (left_->depth_ > right_->depth_ ? left_->depth_ : right_->depth_) + 1;
+    else if (left_)
+        depth_ = left_->depth_ + 1;
+    else if (right_)
+        depth_ = right_->depth_ + 1;
+    else
+        depth_ = 0;
+
+    auto d = this->max_deepness();
+    assert(d == depth_ + 1);
+}
+
+template<typename T>
+bool AvlNode<T>::is_avl_valid() const {
+    auto nd = this->max_deepness();
+    if (nd != this->depth_ + 1)
+        return false;
+    if (this->left_ && !this->left_->is_avl_valid())
+        return false;
+
+    if (this->right_ && !this->right_->is_avl_valid())
+        return false;
+    return true;
+}
+
 
 #ifdef ENABLE_OBSOLETE
 
@@ -311,32 +333,3 @@ AvlNode<T>* AvlNode<T>::provideNodeBalance00(AvlNode<T>* node)
 }
 
 #endif // ENABLE_OBSOLETE
-
-template<typename T>
-void AvlNode<T>::recalcDepth() {
-    if (left_ && right_)
-        depth_ = (left_->depth_ > right_->depth_ ? left_->depth_ : right_->depth_) + 1;
-    else if (left_)
-        depth_ = left_->depth_ + 1;
-    else if (right_)
-        depth_ = right_->depth_ + 1;
-    else
-        depth_ = 0;
-
-    auto d = this->max_deepness();
-    assert(d == depth_ + 1);
-}
-
-template<typename T>
-bool AvlNode<T>::check_depths() const {
-    auto nd = this->max_deepness();
-    if (nd != this->depth_ + 1)
-        return false;
-    if (this->left_ && !this->left_->check_depths())
-        return false;
-
-    if (this->right_ && !this->right_->check_depths())
-        return false;
-    return true;
-}
-

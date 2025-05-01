@@ -205,14 +205,14 @@ void testAvlTree()
 			//printf("!!=== Added N=%d:\n", numbers[i]);
 			//drawNodeTree(avlTree.root(), 2);
 			//printf("\n");
-			bool bres = avlTree.root()->check_depths();
+			bool bres = avlTree.root()->is_avl_valid();
 			assert(bres);			
 		}
 		std::string stree = treeNodeToString(avlTree.root());
 		printf(" ~~ STree: %s\n", stree.c_str());
 
 
-		auto rnode = AvlNode<int>::deleteNodeByValue(avlTree.root(), 9);
+		avlTree.deleteNodeByValue(9);
 		stree = treeNodeToString(avlTree.root());
 		printf(" ~~ STree after del: %s\n", stree.c_str());
 
