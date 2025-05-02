@@ -182,3 +182,14 @@ void DisplayBT(const TreeNode<T>* node, int indent)
         DisplayBT(node->left(), indent + 4);
     }
 }
+
+template <typename T>
+void drawTree(const TreeNode<T>* root)
+{
+    //printf("~~~~~~~~~~~~~~~~~\n");
+    //PrintBT(root);
+    printf("~~~~~~~~~~~~~~~~~\n");
+    DisplayBT(root, 0);
+    //drawNodeTree(root, 2);
+    printf("~~~~~~~~~~~~~~~~~\n");
+}

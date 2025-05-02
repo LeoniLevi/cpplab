@@ -1,4 +1,5 @@
 #include "bdl_tree.hpp"
+#include "util.h"
 
 #include <assert.h>
 /*
@@ -288,4 +289,49 @@ void BdlTreeNode::printNodes1() const
         printf(" _ ");
     }
     printf(")");
+}
+
+
+
+void testBdlTree()
+{
+    printf(" ==== testBdlTree start...\n");
+
+    //std::vector<int> numbers{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 };
+    //std::vector<int> numbers{ 0, 92, 1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14 };
+    //std::vector<int> numbers{0, 2, 1, 2, 3, 4, 4};
+    //std::vector<int> numbers{ 2, 4, 1, 7, 0, 5, 6 };
+    //std::vector<int> numbers{ 2, 4, 1, 7, 0, 5, 6};
+
+    std::vector<int> numbers = get_random_arr(24, 99);
+
+    printf(" ~~ addDataAVL ...\n");
+    {
+        BdlTree avlTree;
+
+        for (int i = 0; i < numbers.size(); ++i) {
+            avlTree.addDataAVL(numbers[i]);
+            /*
+            printf("!!=== Added N=%d:\n", numbers[i]);
+            drawNodeTree(avlTree.root().get(), 2);
+            printf("\n");
+            */
+        }
+        printf(" !! Adding completed(NumItems=%d)\n", (int)numbers.size());
+
+        auto root = avlTree.root();
+        //root->printNodes(); printf("\n");
+        drawTree(root.get());
+        printf(" ~~ Depth: %d(calc=%d)\n", root->depth(), root->calculateDepth());
+        drawNodeTree(root.get(), 2);
+
+        printf(" ~~ Iterate nodes(Depth-First): \n");
+        iterateTreeNodesDF<int>(root.get(), [](auto& nd) { printf("%d, ", nd.data()); });
+        printf("\n");
+        printf(" ~~ Iterate nodes(Breadth-First): \n");
+        iterateTreeNodesBF<int>(root.get(), [](auto& nd) { printf("%d, ", nd.data()); });
+        printf("\n");
+    }
+
+    printf("==== testBdlTree done!\n");
 }

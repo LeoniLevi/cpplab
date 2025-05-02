@@ -3,6 +3,8 @@
 #include "avl_node.hpp"
 #include <assert.h>
 
+void testAvlTree();
+
 template<typename T>
 class AvlTree {
 public: 

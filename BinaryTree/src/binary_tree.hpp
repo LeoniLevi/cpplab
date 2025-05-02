@@ -5,6 +5,9 @@
 #include <memory>
 #include <functional>
 
+void testBinaryTreeAdding();
+void testBinaryTreeRotating();
+
 
 
 class BinaryTree : public TreeNode<int> {

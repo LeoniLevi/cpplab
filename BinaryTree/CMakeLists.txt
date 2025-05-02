@@ -12,7 +12,9 @@ add_executable(tree_test
 
     src/legacy/_bst_node.cpp 
     src/legacy/_bin_tree.cpp
-    src/legacy/_my_bin_tree.cpp "src/red-black/rbq_int_tree.cpp")
+    src/legacy/_my_bin_tree.cpp 
+    src/red-black/rbq_int_tree.cpp 
+    src/util.cpp)
 
 target_include_directories(tree_test PRIVATE src)
 

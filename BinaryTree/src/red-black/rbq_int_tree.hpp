@@ -5,6 +5,7 @@
 #include "rb_common.hpp"
 #include <memory>
 
+void testRBQIntTree();
 
 
 class RBQIntNode : public TreeNode<int>

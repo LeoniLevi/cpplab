@@ -7,6 +7,8 @@
 
 #define USE_BDL_WEAK_PTR
 
+void testBdlTree();
+
 #ifdef USE_BDL_WEAK_PTR
     class BdlTreeNode : public TreeNode<int>, public std::enable_shared_from_this<BdlTreeNode>
 #else

@@ -4,6 +4,8 @@
 #include "tree_node.hpp"
 #include <memory>
 
+void testRBIntTree();
+
 class RBIntNode : public TreeNode<int> 
 {
 public:

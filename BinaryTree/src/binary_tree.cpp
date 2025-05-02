@@ -1,4 +1,6 @@
 #include "binary_tree.hpp"
+
+#include "legacy/_my_bin_tree.hpp"
 #include <stdio.h>
 
 //!!
@@ -137,4 +139,75 @@ void BinaryTree::printNodes1() const
         printf(" _ ");
     }
     printf(")");
+}
+
+//===============
+
+
+void testBinaryTreeAdding()
+{
+    printf(" ==== testBinaryTreeAdding start...\n");
+    auto root = std::make_shared<BinaryTree>(10);
+    //root->addData(16);
+    root->addData(5);
+    root->addData(7);
+    root->addData(16);
+    root->addData(3);
+    root->addData(13);
+    printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+    //root->printNodes(); printf("\n");
+    drawTree(root.get());
+
+    {
+        printf(" ~~ MyBinTree experiment start...\n");
+        MyBinTree mbt(root.get());
+        mbt.Dump();
+
+        printf(" ~~ MyBinTree experiment done.\n");
+    }
+
+    //drawNodeTree(root.get(), 2);
+
+    printf("==== testBinaryTreeAdding done!\n");
+}
+
+void testBinaryTreeRotating()
+{
+    printf(" ==== testBinaryTreeRotating start...\n");
+    auto root = std::make_shared<BinaryTree>(10);
+
+    root->addData(11);
+    root->addData(9);
+    root->addData(8);
+
+    root->addData(7);
+    //root->printNodes(); printf("\n");
+    drawTree(root.get());
+
+    printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+    printf(" ~~ rotateLeft(root)...\n");
+    root = BinaryTree::rotateLeft(root);
+    //root->printNodes(); printf("\n");
+    drawTree(root.get());
+
+    printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+    auto llnode = root->left()->left();
+    printf(" ~~ rotateLeftLeftChild(data=%d) - rotateRight...\n", llnode->data());
+    bool rotatedOk = root->left()->rotateLeftChildRight();
+    //root->printNodes(); printf("\n");
+    drawTree(root.get());
+
+    printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+    printf(" ~~ rotateRight(root)...\n");
+    root = BinaryTree::rotateRight(root);
+    //root->printNodes(); printf("\n");
+    drawTree(root.get());
+
+    printf(" ~~ Depth: (calc=%d)\n", root->calculateDepth());
+
+    printf("==== testBinaryTreeRotating done!\n");
 }

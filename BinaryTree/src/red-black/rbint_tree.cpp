@@ -192,5 +192,50 @@ RBIntNode* RBIntNode::rotateRight()
 }
 
 
+//==============
 
+
+void testRBIntTree()
+{
+    printf("==== testRBIntTree - start...\n");
+
+    RBIntTree rbtree(12);
+    /*
+    rbtree.add(10);
+    rbtree.add(7);
+    rbtree.add(6);
+    rbtree.add(5);
+    rbtree.add(4);
+    rbtree.add(3);
+    rbtree.add(2);
+    rbtree.add(1);
+    */
+    rbtree.add(15);
+    rbtree.add(18);
+
+    rbtree.add(10);
+    rbtree.add(22);
+    rbtree.add(6);
+    rbtree.add(9);
+    rbtree.add(13);
+    rbtree.add(2);
+    rbtree.add(1);
+
+    int depth = rbtree.root()->max_deepness();
+    drawNodeTree<int>(rbtree.root(), 3);
+    printf(" ~~~~ testRBIntTree(depth=%d): iterateTreeNodesDF..\n", depth);
+    iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n) {
+        auto rbn = (const RBIntNode&)n;
+        char cc = rbn.color() == RBColor::Black ? 'B' : rbn.color() == RBColor::Red ? 'R' : '?';
+        printf("%d(%c),", rbn.data(), cc);
+                            });
+    printf("\niterateTreeNodesBF..\n");
+    iterateTreeNodesBF<int>(rbtree.root(), [](const TreeNode<int>& n) {
+        auto rbn = (const RBIntNode&)n;
+        char cc = rbn.color() == RBColor::Black ? 'B' : rbn.color() == RBColor::Red ? 'R' : '?';
+        printf("%d(%c),", rbn.data(), cc);
+                            });
+    printf("\n");
+    printf("====  testRBIntTree - Done!\n");
+}
  

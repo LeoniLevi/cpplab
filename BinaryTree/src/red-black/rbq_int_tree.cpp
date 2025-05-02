@@ -200,3 +200,65 @@ RBQIntNode* RBQIntNode::rotateRight()
 }
 
 
+//====================
+
+void drawRbqTreeAsList(RBQIntTree& rbtree)
+{
+    printf("[");
+    iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n) {
+        //auto rbn = (const RBIntNode&)n;
+        auto rbn = (const RBQIntNode*)&n;
+        char cc = rbn->color() == RBColor::Black ? 'B' : rbn->color() == RBColor::Red ? 'R' : '?';
+        printf(" %d(%c)", rbn->data(), cc);
+    });
+    printf(" ]\n");
+}
+
+void testRBQIntTree()
+{
+    printf("==== testRBQIntTree - start...\n");
+#undef CHECK_MONOTONE_ADDING
+#ifdef CHECK_MONOTONE_ADDING	
+
+    int addCount = 17;
+    int step = -1;
+
+    int startValue = step > 0 ? 1 : addCount + 1;
+
+    RBQIntTree rbtree(startValue);
+    for (int i = 0; i < addCount; ++i) {
+        int num = startValue + step + step * i;
+        rbtree.add(num);
+
+        //drawNodeTree<int>(rbtree.root(), 3);
+        //drawRbqTreeAsList(rbtree);
+    }
+#else
+
+    RBQIntTree rbtree(12);
+    rbtree.add(15);
+    rbtree.add(18);
+
+    rbtree.add(10);
+    rbtree.add(22);
+    rbtree.add(6);
+    rbtree.add(9);
+    rbtree.add(13);
+    rbtree.add(7);
+    rbtree.add(2);
+    rbtree.add(1);
+#endif
+    int depth = rbtree.root()->max_deepness();
+    printf(" ~~~~ testRBQIntTree(depth=%d)\n", depth);
+    drawNodeTree<int>(rbtree.root(), 3);
+    drawRbqTreeAsList(rbtree);
+    /*
+    iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n) {
+        auto rbn = (const RBIntNode&)n;
+        char cc = rbn.color() == RBColor::Black ? 'B' : rbn.color() == RBColor::Red ? 'R' : '?';
+        printf("%d(%c),", rbn.data(), cc);
+    });
+    */
+    printf("====  testRBQIntTree - Done!\n");
+
+}
