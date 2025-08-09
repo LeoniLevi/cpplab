@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
+set(CMAKE_CXX_STANDARD 23)
 
 project(cpp20_demo)
 
-message (" ~~ cpp20_demo building...")
+message (" ~~ cpp23_demo building...")
 
 if (UNIX)
     #set(CMAKE_C_COMPILER "/usr/bin/gcc-13")
@@ -12,15 +13,15 @@ endif()
 
 
 if (MSVC)
-    add_compile_options("-std:c++latest")
+    #add_compile_options("-std:c++latest")
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
 else()
-    set(CMAKE_CXX_STANDARD 20)
+    #set(CMAKE_CXX_STANDARD 20)
     #add_compile_options(-fcoroutines)
 endif()
 
-add_compile_definitions(USE_CPP20_RANGES)
-add_compile_definitions(USE_CPP17_FILESYSTEM)
+#add_compile_definitions(USE_CPP20_RANGES)
+#add_compile_definitions(USE_CPP17_FILESYSTEM)
 
 option(BUILD_COROUTINES "Build coroutione c++20 related code" ON)
 

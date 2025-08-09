@@ -1,5 +1,7 @@
 #include "conceptplay.h"
-
+#include "concept_HasLength.h"
+#include "concept_HasLenFun.h"
+#include "concept_HasLen2Fun.h"
 
 
 #include <numeric>
@@ -16,80 +18,8 @@ constexpr double Average(const std::vector<T>& vec)
     return sum / vec.size();
 }
 
-template<typename T>
-concept HasLength = requires(T v)
-{
-    {v.length()} -> std::convertible_to<double>;
-};
-
-
-
-// == Trick which allows define HasLen2Fun before declaration of Len2 for builtin types...
-// == But, we still need to declare Len2 before function using HasLen2Fun types ...
-
-template<class T>
-struct A {
-    operator T() const;
-};
-
-template<typename T>
-concept HasLen2Fun = requires
-{
-    Len2(A<T>{});
-};
-
-double Len2(short b);
-static_assert(HasLen2Fun<short>);
-
-double Len2(std::string b);
-static_assert(HasLen2Fun<std::string>);
-
-
-template<HasLen2Fun T>
-double TotalLen2Fun(const std::vector<T>& vec)
-{
-    double len = 0.0;
-    for (auto& v : vec)
-        len += Len2(v);
-    return len;
-}
-
-
-double Len2(short b) { return b; }
-double Len2(std::string s) { return (double)s.length(); }
-
-
-
-// functions of built-in types is to be declared to be visible by concept 'HasLengthFun'
-// (because of ADL: "argument-dependent lookup" (aka Koenig Lookup))
-double Len(const std::string& s);
-double Len(int n);
-
-template<typename T>
-concept HasLenFun = requires(T v)
-{
-    Len(v);
-};
-
-template<HasLength T>
-double TotalLength(const std::vector<T>& vec)
-{
-    double len = 0.0;
-    for (auto & v : vec)
-        len += v.length();
-    return len;
-}
-
-template<HasLenFun T>
-double TotalLenFun(const std::vector<T>& vec)
-{
-    double len = 0.0;
-    for (auto& v : vec)
-        len += Len(v);
-    return len;
-}
-
 //-////////////////////////////
+
 #include <math.h>
 #include <string>
 
