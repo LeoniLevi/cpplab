@@ -45,7 +45,9 @@ set (sources
     src/fsplay.cpp
     src/rngplay.cpp
     src/coroplay.cpp
+
     src/conceptplay.cpp
+    src/concept_play_monadic.cpp
 )
 
 add_executable(cpp20_demo ${sources} )

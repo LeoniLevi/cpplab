@@ -2,6 +2,7 @@
 #include "concept_HasLength.h"
 #include "concept_HasLenFun.h"
 #include "concept_HasLen2Fun.h"
+#include "concept_play_monadic.h"
 
 
 #include <numeric>
@@ -91,5 +92,7 @@ void play_concepts()
     double sslens = TotalLen2Fun(strings);
     printf(" ~~ TotalLen2Fun result: ofStrings=%f\n", sslens);
     //double pplens = TotalLen2Fun(points); // ERROR
+
+    test_optional_monad();
 
 }
