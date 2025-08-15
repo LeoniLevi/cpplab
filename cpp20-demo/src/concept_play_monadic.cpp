@@ -7,17 +7,17 @@ void test_optional_monad() {
     printf(" ~~ test_optional_monad - started...\n");
 
     using optional_monad::pure;
-    using optional_monad::operator>>;
+    using optional_monad::operator |;
 
     std::optional<int> val0 = pure(10);
 
     auto result = 
-        val0 >> [](int x) { 
+        val0 | [](int x) { 
             return pure(x + 5); 
-        } >> [](int y) {
+        } | [](int y) {
             if (y > 10) 
                 return pure(y * 2);
-             else 
+            else 
                 return std::optional<int>(); // Representing a "failure" or no value            
         };    
 
@@ -30,7 +30,7 @@ void test_optional_monad() {
     }
 
     std::optional<int> empty_value = std::nullopt;
-    auto no_result = empty_value >> [](int x) {
+    auto no_result = empty_value | [](int x) {
         return pure(x + 1);
     };
 

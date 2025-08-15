@@ -22,8 +22,8 @@ template <typename M, typename T>
 concept Monadic = requires(M m, T val, std::function<std::optional<int>(T)> f) {
     // pure/return operation
     { M::template pure<T>(val) } -> std::same_as<M>;
-    // bind operation (operator>>)
-    { m >> f } -> std::same_as<M>;
+    // bind operation (operator |)
+    { m | f } -> std::same_as<M>;
 };
 
 // Monadic operations for std::optional
@@ -35,7 +35,7 @@ namespace optional_monad {
     }
 
     template <typename T, typename Func, typename U = std::invoke_result_t<Func, T>::value_type>
-    std::optional<U> operator>>(std::optional<T> opt, Func f) {
+    std::optional<U> operator | (std::optional<T> opt, Func f) {
         if (opt) {
             return f(*opt);
         } else {
