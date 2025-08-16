@@ -3,11 +3,11 @@
 
 #include <print>
 
-template<typename Cont>
-void printContainer(const Cont& container) {
+template<typename Coll>
+void printCollection(const Coll& container) {
     std::print("{{");
     bool isfirst = true;
-    for(auto const & elem: container) {
+    for(auto const& elem: container) {
         if (isfirst)
             isfirst = false;
         else 
@@ -37,10 +37,8 @@ void test_optional_monad() {
 
     if (result) {
         std::println(" -- Result: %d", *result);
-        //std::cout << "Result: " << *result << std::endl; // Output: Result: 30
     } else {
         std::println(" -- No result.");
-        //std::cout << "No result." << std::endl;
     }
 
     std::optional<int> empty_value = std::nullopt;
@@ -50,10 +48,8 @@ void test_optional_monad() {
 
     if (no_result) {
         std::println(" -- This should not be printed.");
-        //std::cout << "This should not be printed." << std::endl;
     } else {
         std::println(" -- No result from empty optional."); // Output: No result from empty optional.
-       // std::cout << "No result from empty optional." << std::endl; // Output: No result from empty optional.
     }
 
     std::println(" ~~ test_optional_monad - completed.");
@@ -65,7 +61,6 @@ void test_vector_monad() {
     using vector_monad::pure;
     using vector_monad::operator |;
 
-    //std::vector<int> val0 = pure(10);
     std::vector<int> val0 { 10, 12, 15};
 
     auto result01 = val0 
@@ -76,7 +71,7 @@ void test_vector_monad() {
         };    
 
     std::print("Result01 is: ");
-    printContainer(result01);  
+    printCollection(result01);  
     std::println();  
 
     auto result02 = val0 
@@ -89,7 +84,7 @@ void test_vector_monad() {
         };     
 
     std::print("Result02 is: ");
-    printContainer(result02);  
+    printCollection(result02);  
     std::println();  
     
     std::println(" ~~ test_vector_monad - completed.");
