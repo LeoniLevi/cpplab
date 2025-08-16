@@ -94,5 +94,6 @@ void play_concepts()
     //double pplens = TotalLen2Fun(points); // ERROR
 
     test_optional_monad();
+    test_vector_monad();
 
 }
