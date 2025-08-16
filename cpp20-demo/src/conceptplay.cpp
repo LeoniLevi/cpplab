@@ -80,6 +80,9 @@ void play_concepts()
     double vlen2 = TotalLenFun(gvects);
     printf(" ~~ TotalLenFun result: ofVector2Ds=%f\n", vlen2);
 
+    std::vector<std::pair<int, int> > vvv { {1,3}, {2,4}, {5,8}};
+    //double dvv = TotalLenFun(vvv); // !! Compile Error: std::pair is not 'HasLenFun'
+
     //double dlen = TotalLengthFun(doubles); // ERROR!
     //printf(" ~~ TotalLengthFun result: ofDoubles=%f\n", dlen);
     double ptlens = TotalLenFun(points); // ERROR!??

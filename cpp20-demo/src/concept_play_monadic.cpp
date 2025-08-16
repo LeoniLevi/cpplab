@@ -1,25 +1,24 @@
 #include "concept_play_monadic.h"
 #include "concept_monadic.h"
 
-#include <stdio.h>
-#include <iostream>
+#include <print>
 
 template<typename Cont>
 void printContainer(const Cont& container) {
-    std::cout << "{";
+    std::print("{{");
     bool isfirst = true;
-    for(auto const&  elem: container) {
+    for(auto const & elem: container) {
         if (isfirst)
             isfirst = false;
         else 
-            std::cout << ", ";
-        std::cout << elem;
+            std::print(", ");
+        std::print("{0:.2f}", (double)elem);
     }
-    std::cout << "}";
+    std::print("}}");
 }
 
 void test_optional_monad() {    
-    printf(" ~~ test_optional_monad - started...\n");
+    std::println(" ~~ test_optional_monad - started...");
 
     using optional_monad::pure;
     using optional_monad::operator |;
@@ -37,10 +36,10 @@ void test_optional_monad() {
         };    
 
     if (result) {
-        printf(" -- Result: %d\n", *result);
+        std::println(" -- Result: %d", *result);
         //std::cout << "Result: " << *result << std::endl; // Output: Result: 30
     } else {
-        printf(" -- No result.\n");
+        std::println(" -- No result.");
         //std::cout << "No result." << std::endl;
     }
 
@@ -50,18 +49,18 @@ void test_optional_monad() {
     };
 
     if (no_result) {
-        printf(" -- This should not be printed.\n");
+        std::println(" -- This should not be printed.");
         //std::cout << "This should not be printed." << std::endl;
     } else {
-        printf(" -- No result from empty optional.\n"); // Output: No result from empty optional.
+        std::println(" -- No result from empty optional."); // Output: No result from empty optional.
        // std::cout << "No result from empty optional." << std::endl; // Output: No result from empty optional.
     }
 
-    printf(" ~~ test_optional_monad - completed.\n");
+    std::println(" ~~ test_optional_monad - completed.");
 }
 
 void test_vector_monad() {    
-    printf(" ~~ test_vector_monad - started...\n");
+    std::println(" ~~ test_vector_monad - started...");
 
     using vector_monad::pure;
     using vector_monad::operator |;
@@ -76,9 +75,9 @@ void test_vector_monad() {
             return pure(y * 2);           
         };    
 
-    printf("Result01 is: ");
+    std::print("Result01 is: ");
     printContainer(result01);  
-    printf("\n");      
+    std::println();  
 
     auto result02 = val0 
         | [](int x) { 
@@ -89,9 +88,9 @@ void test_vector_monad() {
             return std::vector<double> { x / 0.98};
         };     
 
-    printf("Result02 is: ");
+    std::print("Result02 is: ");
     printContainer(result02);  
-    printf("\n");  
+    std::println();  
     
-    printf(" ~~ test_vector_monad - completed.\n");
+    std::println(" ~~ test_vector_monad - completed.");
 }
