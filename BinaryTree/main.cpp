@@ -3,7 +3,7 @@
 #include "red-black/rbint_tree.hpp"
 #include "red-black/rbq_int_tree.hpp"
 
-#define TEST_LEGACY_TREES
+//#define TEST_LEGACY_TREES
 #ifdef TEST_LEGACY_TREES
 #include "binary_tree.hpp"
 #include "legacy/_bst_node.hpp"
@@ -30,9 +30,11 @@ int main()
 	//testAvlTree();
 	//return 0;
 
+	testRBIntTree();
+	return 0;
+
 	testRBQIntTree();
 	//return 0;
-	testRBIntTree();
 
 	testAvlTree();
 	//return 0;

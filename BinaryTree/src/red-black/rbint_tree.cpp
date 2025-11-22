@@ -17,14 +17,89 @@ inline void rassert(bool condition, const char* errmsg)
 
 //----------------------------
 
-RBIntTree::RBIntTree(int rootValue) : root_(new RBIntNode(rootValue, RBColor::Black))
-{}
+int RBIntTree::createdNodes_ = 0;
+int RBIntTree::destroyedNodes_ = 0;
+
+RBIntTree::RBIntTree() : root_(nullptr) {}
+
+RBIntTree::~RBIntTree()
+{
+    if (root_) {
+        DestroyNode(root_);
+    }
+}
+
+//static 
+RBIntNode* RBIntTree::CreateNode(int value, RBColor color) 
+{
+    createdNodes_ += 1;
+    return new RBIntNode(value, color);
+}
+//static 
+void RBIntTree::DestroyNode(RBIntNode* node) 
+{
+    if (node->left())
+        DestroyNode(node->nleft());
+    if (node->right())
+        DestroyNode(node->nright());
+
+    destroyedNodes_ += 1;
+    delete node;
+}
 
 void RBIntTree::add(int value)
 {
-    RBIntNode* newNode = root_->addChild(value);
+    if (!root_) {
+        root_ = CreateNode(value, RBColor::Black);
+        return;
+    }
+
+    //RBIntNode* newNode = root_->addChild(value);
+    RBIntNode* newNode = root_->addNode(CreateNode(value, RBColor::Black));
     newNode->setColor(RBColor::Red); //
     fixTreeForNode(newNode);
+}
+
+bool RBIntTree::remove(int value)
+{
+    RBIntNode* foundNode = root_->searchNode(value);
+    if (!foundNode)
+        return false;
+
+    RBIntNode* vnode = foundNode;
+    if (foundNode->right()) {
+        for (vnode = foundNode->nright(); vnode->left(); ) {
+            vnode = vnode->nleft();
+        }
+    }
+    else if (vnode->left()) {
+        for (vnode = foundNode->nleft(); vnode->right(); ) {
+            vnode = vnode->nright();
+        }
+    }
+    rassert(!(vnode->left() && vnode->right()), "RBIntTree::remove - unode: more than one children");
+
+    if (vnode == root_) {
+        DestroyNode( root_);
+        root_ = nullptr;
+        return true;
+    }
+
+    RBIntNode* unode = vnode->right() ? vnode->nright() : vnode->nleft();
+
+    if (isRed(vnode) || isRed(unode)) {
+        foundNode->setValue(vnode->value());
+        vnode->substituteWith(unode);
+        if (isRed(unode))
+            unode->setColor(RBColor::Black);
+        delete vnode;
+        return true;
+    }
+
+    /// if we are here - unode && vnode are BLACK
+    RBIntNode* snode = vnode->sibling();
+    rassert(snode, "RBIntTree::remove - sibling is NULL when vnode is BLACK");
+
 }
 
 void RBIntTree::fixTreeForNode(RBIntNode* node)
@@ -81,7 +156,7 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
     else if (gparent->left() == parent && parent->right() == node) { // LeftRight case
         RBIntNode* newParent = parent->rotateLeft();
         RBIntNode* newGParent = gparent->rotateRight();
-        rassert(newGParent->color() == RBColor::Red, "RBIntTree::fixTreeForNode(LR) - new grandparent isn't RED");
+        rassert(newGParent->color() == RBColor::Red, "RBIntTree::fixTreeForNode(LR) - newGrandparent isn't RED");
         if(gparentIsRoot) {
             root_ = newGParent;
         }
@@ -91,7 +166,7 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
     }
     else if (gparent->right() == parent && parent->right() == node) { // RightRight case
         RBIntNode* newGParent = gparent->rotateLeft();
-        rassert(newGParent->color() == RBColor::Red, "RBIntTree::fixTreeForNode(RR) - new grandparent isn't RED");
+        rassert(newGParent->color() == RBColor::Red, "RBIntTree::fixTreeForNode(RR) - newGrandparent isn't RED");
 
         if (gparentIsRoot) {
             root_ = newGParent;
@@ -102,7 +177,7 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
     else if (gparent->right() == parent && parent->left() == node) { // RightLeft case
         RBIntNode* newParent = parent->rotateRight();
         RBIntNode* newGParent = gparent->rotateLeft();
-        rassert(newGParent->color() == RBColor::Red, "RBIntTree::fixTreeForNode(RL) - new grandparent isn't RED");
+        rassert(newGParent->color() == RBColor::Red, "RBIntTree::fixTreeForNode(RL) - nnewGrandparent isn't RED");
         if (gparentIsRoot) {
             root_ = newGParent;
         }
@@ -111,27 +186,54 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
     }
 }
 
-//-----------------------
+//-------------------------------------
+//--------------------- RBIntNode
+//-------------------------------------
 
-RBIntNode* RBIntNode::addChild(int value)
+RBIntNode* RBIntNode::addNode(RBIntNode* node)
 {
+    int value = node->value();
     if (value <= value_) {
         if (left_) {
-            return left_->addChild(value);
+            return left_->addNode(node);
         }
-        left_ = new RBIntNode(value, RBColor::Red);
-        left_->parent_ = this;   
-        //return left_.get();
+        left_ = node;
+        left_->parent_ = this;
         return left_;
     }
     else {
         if (right_) {
-            return right_->addChild(value);
-        }        
-        right_ = new RBIntNode(value, RBColor::Red);
+            return right_->addNode(node);
+        }
+        right_ = node;
         right_->parent_ = this;
         return right_;
     }
+}
+
+RBIntNode* RBIntNode::searchNode(int value)
+{    
+    return value == value_ ? this
+        : left_ && value < value_ ? left_->searchNode(value)
+        : right_ && value > value_ ? right_->searchNode(value)
+        : nullptr;
+}
+
+void RBIntNode::substituteWith(RBIntNode* node)
+{
+    if (parent_) {
+        if (isLeft())
+            parent_->left_ = node;
+        else
+            parent_->right_ = node;
+    }
+    if (node)
+        node->parent_ = parent_;
+
+    // Clear THIS tree-related links (because it's substituted with another for now)
+    left_ = nullptr;
+    right_ = nullptr;
+    parent_ = nullptr;
 }
 
 RBIntNode* RBIntNode::rotateLeft()
@@ -186,6 +288,7 @@ RBIntNode* RBIntNode::rotateRight()
     upNode->right_ = downNode;
 
     downNode->parent_ = upNode;
+
     downNode->left_ = upNodeOldRight;
 
     return upNode;
@@ -199,7 +302,8 @@ void testRBIntTree()
 {
     printf("==== testRBIntTree - start...\n");
 
-    RBIntTree rbtree(12);
+    RBIntTree rbtree;
+    rbtree.add(12);
     /*
     rbtree.add(10);
     rbtree.add(7);
