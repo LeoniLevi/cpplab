@@ -60,6 +60,7 @@ void RBIntTree::add(int value)
     fixTreeForNode(newNode);
 }
 
+
 bool RBIntTree::remove(int value)
 {
     RBIntNode* foundNode = root_->searchNode(value);
@@ -96,12 +97,36 @@ bool RBIntTree::remove(int value)
         return true;
     }
 
-    /// if we are here - unode && vnode are BLACK
-    RBIntNode* snode = vnode->sibling();
-    rassert(snode, "RBIntTree::remove - sibling is NULL when vnode is BLACK");
+    /// if we are here - unode && vnode are BLACK (unode CAN BE NULL !!)
+    
 
+    // Set VNode as DoubleBlack, Fix DoubleBlack, AFTER that substitute VNode with U-Node
+    fixDoubleBlackNode(vnode);
+    vnode->substituteWith(unode);
+    delete vnode;
+    return true;
 }
 
+
+void RBIntTree::fixDoubleBlackNode(RBIntNode* node)
+{
+    RBIntNode* snode = node->sibling();
+    rassert(snode, "RBIntTree::remove - sibling is NULL when vnode is BLACK");
+
+    if (isBlack(snode) && isBlack(snode->nleft()) && isBlack(snode->nright()))
+    {
+        snode->setColor(RBColor::Red);
+        if (isRed(snode->parent())) {
+            snode->parent()->setColor(RBColor::Black);
+        }
+        else {
+            fixDoubleBlackNode(snode->parent());
+        }
+        return;
+    }
+    // ...
+    // NOT Ready yet!!
+}
 void RBIntTree::fixTreeForNode(RBIntNode* node)
 {
     rassert(node->color() == RBColor::Red, "RBIntTree::fixTreeForNode - node is not RED");

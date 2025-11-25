@@ -70,6 +70,7 @@ public:
     bool remove(int value);
 private:
     void fixTreeForNode(RBIntNode* node);
+    void fixDoubleBlackNode(RBIntNode* node);
     static RBIntNode* CreateNode(int value, RBColor color);
     static void DestroyNode(RBIntNode* node);
 private:
