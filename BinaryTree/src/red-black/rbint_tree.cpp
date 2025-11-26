@@ -98,10 +98,10 @@ bool RBIntTree::remove(int value)
     }
 
     /// if we are here - unode && vnode are BLACK (unode CAN BE NULL !!)
-    
 
     // Set VNode as DoubleBlack, Fix DoubleBlack, AFTER that substitute VNode with U-Node
     fixDoubleBlackNode(vnode);
+    // now vnode DoubleBlack is fixed, we can move 'U' into 'V' and delete 'V'(which must be deleted)
     vnode->substituteWith(unode);
     delete vnode;
     return true;
@@ -113,16 +113,56 @@ void RBIntTree::fixDoubleBlackNode(RBIntNode* node)
     RBIntNode* snode = node->sibling();
     rassert(snode, "RBIntTree::remove - sibling is NULL when vnode is BLACK");
 
-    if (isBlack(snode) && isBlack(snode->nleft()) && isBlack(snode->nright()))
-    {
-        snode->setColor(RBColor::Red);
-        if (isRed(snode->parent())) {
-            snode->parent()->setColor(RBColor::Black);
+    if (isBlack(snode)) {
+        if (isBlack(snode->nleft()) && isBlack(snode->nright())) {
+            snode->setColor(RBColor::Red);
+            if (isRed(snode->parent())) {
+                snode->parent()->setColor(RBColor::Black);
+            }
+            else {
+                fixDoubleBlackNode(snode->parent());
+            }
+            return;
         }
-        else {
-            fixDoubleBlackNode(snode->parent());
+        // if we are here - at least once sibling's child is Red
+        if (snode->isRight()) {
+            if (isRed(snode->nright())) {
+                snode->parent()->rotateLeft();
+                return;
+            }
+            else if (isRed(node->nleft())) {
+                snode->nleft()->setColor(RBColor::Black);
+                snode->setColor(RBColor::Red);
+                snode->parent()->rotateLeft();
+                return;
+            }
         }
-        return;
+        else { // if snode is Left - symmetically reversed actions
+            if (isRed(snode->nleft())) {
+                snode->parent()->rotateRight();
+                return;
+            }
+            else if (isRed(node->nright())) {
+                snode->nright()->setColor(RBColor::Black);
+                snode->setColor(RBColor::Red);
+                snode->parent()->rotateRight();
+                return;
+            }
+        }
+    }
+    else { // if isRed(snode)
+        if (snode->isRight()) {
+            snode->setColor(RBColor::Black);
+            snode->parent()->setColor(RBColor::Red);
+            snode->parent()->rotateLeft();
+            return;
+        }
+        else { // if snode is Left - symmetically reversed actions
+            snode->setColor(RBColor::Black);
+            snode->parent()->setColor(RBColor::Red);
+            snode->parent()->rotateRight();
+            return;
+        }
     }
     // ...
     // NOT Ready yet!!
@@ -319,6 +359,61 @@ RBIntNode* RBIntNode::rotateRight()
     return upNode;
 }
 
+//==========
+void drawRBSlot(int slotLen, const RBIntNode* node = 0) {
+    char clr = isRed(node) ? 'R' : 'B';
+    if (node) {
+        int parval = node->parent() ? node->parent()->value() : 0;
+        std::cout << std::setfill('0') << std::setw(slotLen) << 
+            node->data() << clr << parval << std::setfill(' ');
+    }
+    else {
+        std::cout << std::setw(slotLen) << "";
+    }
+    //std::cout << std::setfill(' ');
+}
+
+void drawRBSlotZone(int zoneLen, int slotLen, const RBIntNode* node)
+{
+    int prefixLen = (zoneLen - slotLen) / 2;
+    std::cout << std::setw(prefixLen) << "";
+    drawRBSlot(slotLen, node);
+    std::cout << std::setw(zoneLen - prefixLen - slotLen) << "";
+}
+
+void drawRBNodeTree(const RBIntNode* root, int slotLen)
+{
+    int treeDepth = getDepth(root);
+    int maxDepNumSlots = 1; // initially
+    for (int i = 2; i <= treeDepth; ++i) {
+        maxDepNumSlots *= 2;
+    }
+    int lineLen = (maxDepNumSlots * 2) * slotLen;
+
+    int numDepSlots = 1;
+    std::vector<const RBIntNode*> lineNodes{ root };
+    for (int dep = 1; dep <= treeDepth; ++dep) {
+        int zoneLen = lineLen / numDepSlots;
+        for (int j = 0; j < numDepSlots; ++j) {
+            drawRBSlotZone(zoneLen, slotLen, lineNodes[j]);
+        }
+        std::cout << '\n';
+
+        int nextNumDepSlots = numDepSlots * 2;
+        std::vector<const RBIntNode*> nextLineNodes(nextNumDepSlots);
+        for (int j = 0; j < numDepSlots; ++j) {
+            const RBIntNode* nd = lineNodes[j];
+            if (nd) {
+                nextLineNodes[j * 2] = nd->nleft();
+                nextLineNodes[j * 2 + 1] = nd->nright();
+            }
+        }
+
+        numDepSlots = nextNumDepSlots;
+        lineNodes = nextLineNodes;
+    }
+}
+
 
 //==============
 
@@ -350,8 +445,18 @@ void testRBIntTree()
     rbtree.add(2);
     rbtree.add(1);
 
+    //rbtree.add(17);
+
+
     int depth = rbtree.root()->max_deepness();
-    drawNodeTree<int>(rbtree.root(), 3);
+    //drawNodeTree<int>(rbtree.root(), 3);
+    drawRBNodeTree(rbtree.root(), 3);
+    printf(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+    rbtree.remove(10);
+    //drawNodeTree<int>(rbtree.root(), 3);
+    drawRBNodeTree(rbtree.root(), 3);
+
+
     printf(" ~~~~ testRBIntTree(depth=%d): iterateTreeNodesDF..\n", depth);
     iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n) {
         auto rbn = (const RBIntNode&)n;

@@ -29,7 +29,20 @@ public:
     RBIntNode* nleft() { return left_; }
     RBIntNode* nright() { return right_; }
 
-    RBIntNode* sibling() { return parent_ ? (isLeft() ? left_ : right_) : nullptr; }
+    const RBIntNode* parent() const { return parent_; }
+    const RBIntNode* nleft() const { return left_; }
+    const RBIntNode* nright() const { return right_; }
+
+    RBIntNode* sibling() { 
+        //return parent_ ? (isLeft() ? left_ : right_) : nullptr; 
+        if (!parent_)
+            return nullptr;
+
+        if (isLeft())
+            return parent_->right_;
+        else
+            return parent_->left_;
+    }
 
     void setColor(RBColor color) { color_ = color; }
     void setValue(int value) { value_ = value; }
@@ -39,6 +52,7 @@ public:
     RBIntNode* searchNode(int value);
 
     bool isLeft() const { return parent_ && parent_->left_ == this; }
+    bool isRight() const { return !isLeft(); }
 
     void substituteWith(RBIntNode* node);
 
