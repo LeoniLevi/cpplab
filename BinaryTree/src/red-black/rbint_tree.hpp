@@ -4,76 +4,7 @@
 #include "tree_node.hpp"
 #include <memory>
 
-void testRBIntTree();
-
-class RBIntNode : public TreeNode<int> 
-{
-public:
-    RBIntNode(int value, RBColor color)
-        : value_(value), color_(color)
-        , parent_(0), left_(0), right_(0)
-    {}
-    
-    /// TreeNode<int> implementation
-    int data() const override { return value(); }
-    const TreeNode<int>* left() const override { return left_; }
-    const TreeNode<int>* right() const override { return right_; }
-    
-    int value() const { return value_; }
-    RBColor color() const { return color_; }
-
-//private:
-    //friend class RBIntTree;
-
-    RBIntNode* parent() { return parent_; }
-    RBIntNode* nleft() { return left_; }
-    RBIntNode* nright() { return right_; }
-
-    const RBIntNode* parent() const { return parent_; }
-    const RBIntNode* nleft() const { return left_; }
-    const RBIntNode* nright() const { return right_; }
-
-    RBIntNode* sibling() { 
-        //return parent_ ? (isLeft() ? left_ : right_) : nullptr; 
-        if (!parent_)
-            return nullptr;
-
-        if (isLeft())
-            return parent_->right_;
-        else
-            return parent_->left_;
-    }
-
-    void setColor(RBColor color) { color_ = color; }
-    void setValue(int value) { value_ = value; }
-
-    RBIntNode* addNode(RBIntNode* node);
-
-    RBIntNode* searchNode(int value);
-
-    bool isLeft() const { return parent_ && parent_->left_ == this; }
-    bool isRight() const { return !isLeft(); }
-
-    void substituteWith(RBIntNode* node);
-
-    RBIntNode* rotateLeft();
-    RBIntNode* rotateRight();
-    
-
-private:
-    int value_;
-    RBColor color_;
-    
-    RBIntNode* parent_;
-
-    RBIntNode* left_;
-    RBIntNode* right_;
-
-};
-
-
-inline bool isRed(const RBIntNode* nd) { return nd && nd->color() == RBColor::Red; }
-inline bool isBlack(const RBIntNode* nd) { return !isRed(nd); }
+class RBIntNode;
 
 class RBIntTree {
 public:
@@ -85,11 +16,72 @@ public:
 private:
     void fixTreeForNode(RBIntNode* node);
     void fixDoubleBlackNode(RBIntNode* node);
-    static RBIntNode* CreateNode(int value, RBColor color);
-    static void DestroyNode(RBIntNode* node);
+    static RBIntNode* createNode(int value, RBColor color);
+    static void destroyNode(RBIntNode* node);
 private:
     RBIntNode* root_;
 
     static int createdNodes_;
     static int destroyedNodes_;
 };
+
+void testRBIntTree();
+
+class RBIntNode : public TreeNode<int> 
+{
+public:
+    RBIntNode(int value, RBColor color)
+        : value_(value), color_(color)
+        , parent_(0), left_(0), right_(0)
+    {}
+    
+    /// TreeNode<int> implementation
+    int data() const override { return value_; }
+    const TreeNode<int>* left() const override { return left_; }
+    const TreeNode<int>* right() const override { return right_; }
+    
+    RBColor color() const { return color_; }
+
+    const RBIntNode* parent() const { return parent_; }
+    const RBIntNode* nleft() const { return left_; }
+    const RBIntNode* nright() const { return right_; }
+
+    bool isLeft() const { return parent_ && parent_->left_ == this; }
+    bool isRight() const { return parent_ && parent_->right_ == this; }
+
+private:
+    friend class RBIntTree;
+
+    RBIntNode* addNode(RBIntNode* node);
+    RBIntNode* searchNode(int value);
+    RBIntNode* rotateLeft();
+    RBIntNode* rotateRight();
+
+    RBIntNode* parent() { return parent_; }
+    RBIntNode* nleft() { return left_; }
+    RBIntNode* nright() { return right_; }
+
+    RBIntNode* sibling() { 
+        if (!parent_)
+            return nullptr;
+        return isLeft() ? parent_->right_ : parent_->left_;
+    }
+
+    void setColor(RBColor color) { color_ = color; }
+    void setValue(int value) { value_ = value; }
+
+    void substituteWith(RBIntNode* node);
+
+private:
+    int value_;
+    RBColor color_;
+    
+    RBIntNode* parent_;
+
+    RBIntNode* left_;
+    RBIntNode* right_;
+};
+
+inline bool isRed(const RBIntNode* nd) { return nd && nd->color() == RBColor::Red; }
+inline bool isBlack(const RBIntNode* nd) { return !isRed(nd); }
+
