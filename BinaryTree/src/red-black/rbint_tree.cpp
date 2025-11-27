@@ -303,10 +303,11 @@ void RBIntNode::substituteWith(RBIntNode* node)
 
 RBIntNode* RBIntNode::rotateLeft()
 {
-    rassert(right_, "RBIntNode::rotateLeft - right is absent");
-
     RBIntNode* upNode = right_;
     RBIntNode* downNode = this;
+
+    rassert(right_, "RBIntNode::rotateLeft - right is NULL");
+    RBIntNode* upNodeOldLeft = upNode->left_;
 
     RBIntNode* parentNode = downNode->parent_;
     if (parentNode) {
@@ -318,24 +319,25 @@ RBIntNode* RBIntNode::rotateLeft()
             err_exit("RBIntNode::rotateLeft - node is not a child of parent");
     }
 
-    RBIntNode* upNodeOldLeft = upNode->left_;
-
+    
     upNode->parent_ = parentNode;
     upNode->left_ = downNode;
 
     downNode->parent_ = upNode;
     downNode->right_ = upNodeOldLeft;
+    if (upNodeOldLeft)
+        upNodeOldLeft->parent_ = downNode;
 
     return upNode;
 }
 
 RBIntNode* RBIntNode::rotateRight()
 {
-    rassert(left_, "RBIntNode::rotateRight - left is absent");
-
-
     RBIntNode* upNode = left_;
     RBIntNode* downNode = this;
+
+    rassert(left_, "RBIntNode::rotateRight - left is absent");
+    RBIntNode* upNodeOldRight = upNode->right_;
 
     RBIntNode* parentNode = downNode->parent_;
     if (parentNode) {
@@ -347,14 +349,15 @@ RBIntNode* RBIntNode::rotateRight()
             err_exit("RBIntNode::rotateRight - node is not a child of parent");
     }
 
-    RBIntNode* upNodeOldRight = upNode->right_;
-
+    
     upNode->parent_ = parentNode;
     upNode->right_ = downNode;
 
     downNode->parent_ = upNode;
 
     downNode->left_ = upNodeOldRight;
+    if (upNodeOldRight)
+        upNodeOldRight->parent_ = downNode;
 
     return upNode;
 }
@@ -435,8 +438,7 @@ void testRBIntTree()
     rbtree.add(1);
     */
     rbtree.add(15);
-    rbtree.add(18);
-
+    rbtree.add(18); 
     rbtree.add(10);
     rbtree.add(22);
     rbtree.add(6);
@@ -445,18 +447,18 @@ void testRBIntTree()
     rbtree.add(2);
     rbtree.add(1);
 
-    //rbtree.add(17);
+    rbtree.add(17);
 
+    
+    int valToRemove = 10;
+    drawRBNodeTree(rbtree.root(), 3);
+    printf(" ~~~~~~~~~~~~~~~~~~~ before remove %d ~~~~~~~~~~~~~\n", valToRemove);
+    rbtree.remove(valToRemove);
+    //drawNodeTree<int>(rbtree.root(), 3);
+    drawRBNodeTree(rbtree.root(), 3);
+    printf(" ~~~~~~~~~~~~~~~~~~~ after remove %d ~~~~~~~~~~~~~\n", valToRemove);
 
     int depth = rbtree.root()->max_deepness();
-    //drawNodeTree<int>(rbtree.root(), 3);
-    drawRBNodeTree(rbtree.root(), 3);
-    printf(" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
-    rbtree.remove(10);
-    //drawNodeTree<int>(rbtree.root(), 3);
-    drawRBNodeTree(rbtree.root(), 3);
-
-
     printf(" ~~~~ testRBIntTree(depth=%d): iterateTreeNodesDF..\n", depth);
     iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n) {
         auto rbn = (const RBIntNode&)n;
