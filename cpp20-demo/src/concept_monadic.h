@@ -7,7 +7,7 @@
 #include <functional>
 //#include <iostream>
 
-
+/* //??
 template <template <typename> typename M, typename T>
 concept Monad = requires(T val, M<T> m_val, auto func) {
     // Requirement for 'return' or 'unit' operation
@@ -17,7 +17,7 @@ concept Monad = requires(T val, M<T> m_val, auto func) {
     { m_val.and_then(func) } -> std::convertible_to<M<std::invoke_result_t<decltype(func), T>>>;
     // The exact return type and argument types for 'and_then' would depend on the specific monad implementation.
 };
-
+*/
 
 // Concept for a Monadic type
 template <typename M, typename T>
