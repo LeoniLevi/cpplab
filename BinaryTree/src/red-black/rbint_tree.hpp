@@ -2,7 +2,6 @@
 
 #include "rb_common.hpp"
 #include "tree_node.hpp"
-#include <memory>
 
 class RBIntNode;
 
@@ -10,6 +9,7 @@ class RBIntTree {
 public:
     RBIntTree();
     ~RBIntTree();
+    //const RBIntNode* root() const { return root_; }
     RBIntNode* root() const { return root_; }
     void add(int value);
     bool remove(int value);
@@ -25,7 +25,7 @@ private:
     static int destroyedNodes_;
 };
 
-void testRBIntTree();
+bool isRBIntTreeValid(const RBIntTree* tree);
 
 class RBIntNode : public TreeNode<int> 
 {

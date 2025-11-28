@@ -17,7 +17,7 @@ int main()
 {
 	puts("====== sort-demo app");
 
-	printf(" ~~ __cplusplus: %uu\n", __cplusplus);
+	printf(" ~~ __cplusplus: %lu\n", __cplusplus);
 
 
 	test_myheapsort();

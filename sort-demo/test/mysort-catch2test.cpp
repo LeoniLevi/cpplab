@@ -1,4 +1,4 @@
-#pragma once
+//#pragma once
 
 #include "myqsort.h"
 #include "mymergesort.h"

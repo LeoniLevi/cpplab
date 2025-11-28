@@ -70,7 +70,7 @@
             "buildRoot": "${projectDir}\\out\\build\\${name}",
             "installRoot": "${projectDir}\\out\\install\\${name}",
             "cmakeExecutable": "cmake",
-            "cmakeCommandArgs": "-DCMAKE_C_COMPILER=\"/usr/bin/gcc-13\" -DCMAKE_CXX_COMPILER=\"/usr/bin/g++-13\"",
+            "cmakeCommandArgs": "-DCMAKE_C_COMPILER=\"/usr/bin/gcc-14\" -DCMAKE_CXX_COMPILER=\"/usr/bin/g++-14\"",
             "buildCommandArgs": "",
             "ctestCommandArgs": "",
             "inheritEnvironments": [ "linux_x64" ],

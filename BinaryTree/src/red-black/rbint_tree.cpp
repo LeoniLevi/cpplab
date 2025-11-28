@@ -1,17 +1,5 @@
 #include "rbint_tree.hpp"
-#include <stdexcept>
-
-inline void err_exit(const char* errmsg) 
-{
-    printf(" !! ERROR(R-ABORT): %s\n", errmsg);
-    abort();
-}
-
-inline void rassert(bool condition, const char* errmsg)
-{
-    if (!condition)
-        err_exit(errmsg);
-}
+#include "util.h"
 
 
 
@@ -78,7 +66,12 @@ bool RBIntTree::remove(int value)
             vnode = vnode->nright();
         }
     }
-    rassert(!(vnode->left() && vnode->right()), "RBIntTree::remove - unode: more than one children");
+
+    if (vnode->left() && vnode->right()) {
+        ERR_EXIT("RBIntTree::remove - unode: more than one children");
+        return false;
+    }
+    //RASSERT(!(vnode->left() && vnode->right()), "RBIntTree::remove - unode: more than one children");
 
     if (vnode == root_) {
         destroyNode( root_);
@@ -112,7 +105,7 @@ void RBIntTree::fixDoubleBlackNode(RBIntNode* node)
 {
     RBIntNode* snode = node->sibling();
     if (!snode) {
-        err_exit("RBIntTree::fixDoubleBlackNode - sibling is NULL");
+        ERR_EXIT("RBIntTree::fixDoubleBlackNode - sibling is NULL");
         return; // to appeace compiler
     }
 
@@ -170,7 +163,7 @@ void RBIntTree::fixDoubleBlackNode(RBIntNode* node)
 }
 void RBIntTree::fixTreeForNode(RBIntNode* node)
 {
-    rassert(isRed(node), "RBIntTree::fixTreeForNode - node is not RED");
+    RASSERT(isRed(node), "RBIntTree::fixTreeForNode - node is not RED");
 
     RBIntNode* parent = node->parent();
 
@@ -181,11 +174,11 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
 
     RBIntNode* gparent = parent->parent();
     if (!gparent) {
-        err_exit("RBIntTree::fixTreeForNode - no grandparent(when parent is RED)");
+        ERR_EXIT("RBIntTree::fixTreeForNode - no grandparent(when parent is RED)");
         return; // to appeace compiler
     }
 
-    rassert(isBlack(gparent), "RBIntTree::fixTreeForNode - no grandparent(when parent is RED)");
+    RASSERT(isBlack(gparent), "RBIntTree::fixTreeForNode - no grandparent(when parent is RED)");
 
 
     //// Grandparent is BLACK
@@ -220,7 +213,7 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
     else if (gparent->left() == parent && parent->right() == node) { // LeftRight case
         RBIntNode* newParent = parent->rotateLeft();
         RBIntNode* newGParent = gparent->rotateRight();
-        rassert(isRed(newGParent), "RBIntTree::fixTreeForNode(LR) - newGrandparent isn't RED");
+        RASSERT(isRed(newGParent), "RBIntTree::fixTreeForNode(LR) - newGrandparent isn't RED");
         if(gparentIsRoot) {
             root_ = newGParent;
         }
@@ -230,7 +223,7 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
     }
     else if (gparent->right() == parent && parent->right() == node) { // RightRight case
         RBIntNode* newGParent = gparent->rotateLeft();
-        rassert(isRed(newGParent), "RBIntTree::fixTreeForNode(RR) - newGrandparent isn't RED");
+        RASSERT(isRed(newGParent), "RBIntTree::fixTreeForNode(RR) - newGrandparent isn't RED");
 
         if (gparentIsRoot) {
             root_ = newGParent;
@@ -241,7 +234,7 @@ void RBIntTree::fixTreeForNode(RBIntNode* node)
     else if (gparent->right() == parent && parent->left() == node) { // RightLeft case
         RBIntNode* newParent = parent->rotateRight();
         RBIntNode* newGParent = gparent->rotateLeft();
-        rassert(isRed(newGParent), "RBIntTree::fixTreeForNode(RL) - nnewGrandparent isn't RED");
+        RASSERT(isRed(newGParent), "RBIntTree::fixTreeForNode(RL) - nnewGrandparent isn't RED");
         if (gparentIsRoot) {
             root_ = newGParent;
         }
@@ -302,7 +295,10 @@ void RBIntNode::substituteWith(RBIntNode* node)
 
 RBIntNode* RBIntNode::rotateLeft()
 {
-    rassert(right_, "RBIntNode::rotateLeft - right is NULL");
+    if (!right_) {
+        ERR_EXIT("RBIntNode::rotateLeft - right_ is NULL");
+        return nullptr; // to appeace compiler warning
+    }
 
 
     RBIntNode* upNode = right_;
@@ -316,7 +312,7 @@ RBIntNode* RBIntNode::rotateLeft()
         else if (parentNode->right_ == this)
             parentNode->right_ = upNode;
         else
-            err_exit("RBIntNode::rotateLeft - node is not a child of parent");
+            ERR_EXIT("RBIntNode::rotateLeft - node is not a child of parent");
     }
 
     
@@ -333,7 +329,10 @@ RBIntNode* RBIntNode::rotateLeft()
 
 RBIntNode* RBIntNode::rotateRight()
 {
-    rassert(left_, "RBIntNode::rotateRight - left is absent");
+    if (!left_) {
+        ERR_EXIT("RBIntNode::rotateRight - left_ is NULL");
+        return nullptr; // to appeace compiler warning
+    }
 
     RBIntNode* upNode = left_;
     RBIntNode* downNode = this;
@@ -346,7 +345,7 @@ RBIntNode* RBIntNode::rotateRight()
         else if (parentNode->right() == this)
             parentNode->right_ = upNode;
         else
-            err_exit("RBIntNode::rotateRight - node is not a child of parent");
+            ERR_EXIT("RBIntNode::rotateRight - node is not a child of parent");
     }
 
     
@@ -363,116 +362,6 @@ RBIntNode* RBIntNode::rotateRight()
 }
 
 //==========
-void drawRBSlot(int slotLen, const RBIntNode* node = 0) {
-    char clr = isRed(node) ? 'R' : 'B';
-    if (node) {
-        int parval = node->parent() ? node->parent()->data() : 0;
-        std::cout << std::setfill('0') << std::setw(slotLen) << 
-            node->data() << clr << parval << std::setfill(' ');
-    }
-    else {
-        std::cout << std::setw(slotLen) << "";
-    }
-    //std::cout << std::setfill(' ');
-}
-
-void drawRBSlotZone(int zoneLen, int slotLen, const RBIntNode* node)
-{
-    int prefixLen = (zoneLen - slotLen) / 2;
-    std::cout << std::setw(prefixLen) << "";
-    drawRBSlot(slotLen, node);
-    std::cout << std::setw(zoneLen - prefixLen - slotLen) << "";
-}
-
-void drawRBNodeTree(const RBIntNode* root, int slotLen)
-{
-    int treeDepth = getDepth(root);
-    int maxDepNumSlots = 1; // initially
-    for (int i = 2; i <= treeDepth; ++i) {
-        maxDepNumSlots *= 2;
-    }
-    int lineLen = (maxDepNumSlots * 2) * slotLen;
-
-    int numDepSlots = 1;
-    std::vector<const RBIntNode*> lineNodes{ root };
-    for (int dep = 1; dep <= treeDepth; ++dep) {
-        int zoneLen = lineLen / numDepSlots;
-        for (int j = 0; j < numDepSlots; ++j) {
-            drawRBSlotZone(zoneLen, slotLen, lineNodes[j]);
-        }
-        std::cout << '\n';
-
-        int nextNumDepSlots = numDepSlots * 2;
-        std::vector<const RBIntNode*> nextLineNodes(nextNumDepSlots);
-        for (int j = 0; j < numDepSlots; ++j) {
-            const RBIntNode* nd = lineNodes[j];
-            if (nd) {
-                nextLineNodes[j * 2] = nd->nleft();
-                nextLineNodes[j * 2 + 1] = nd->nright();
-            }
-        }
-
-        numDepSlots = nextNumDepSlots;
-        lineNodes = nextLineNodes;
-    }
-}
 
 
-//==============
 
-
-void testRBIntTree()
-{
-    printf("==== testRBIntTree - start...\n");
-
-    RBIntTree rbtree;
-    rbtree.add(12);
-    /*
-    rbtree.add(10);
-    rbtree.add(7);
-    rbtree.add(6);
-    rbtree.add(5);
-    rbtree.add(4);
-    rbtree.add(3);
-    rbtree.add(2);
-    rbtree.add(1);
-    */
-    rbtree.add(15);
-    rbtree.add(18); 
-    rbtree.add(10);
-    rbtree.add(22);
-    rbtree.add(6);
-    rbtree.add(9);
-    rbtree.add(13);
-    rbtree.add(2);
-    rbtree.add(1);
-
-    rbtree.add(17);
-
-    
-    int valToRemove = 10;
-    drawRBNodeTree(rbtree.root(), 3);
-    printf(" ~~~~~~~~~~~~~~~~~~~ before remove %d ~~~~~~~~~~~~~\n", valToRemove);
-    rbtree.remove(valToRemove);
-    drawRBNodeTree(rbtree.root(), 3);
-    printf(" ~~~~~~~~~~~~~~~~~~~ after remove %d ~~~~~~~~~~~~~\n", valToRemove);
-
-    int depth = rbtree.root()->max_deepness();
-    printf(" ~~~~ testRBIntTree(depth=%d): iterateTreeNodesDF..\n", depth);
-    iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n) 
-    {
-        auto rbn = (const RBIntNode&)n;
-        char cc = isRed(&rbn) ? 'R' : 'B';
-        printf("%d(%c),", rbn.data(), cc);
-    });
-    printf("\niterateTreeNodesBF..\n");
-    iterateTreeNodesBF<int>(rbtree.root(), [](const TreeNode<int>& n) 
-    {
-        auto rbn = (const RBIntNode&)n;
-        char cc = isRed(&rbn) ? 'R' : 'B';
-        printf("%d(%c),", rbn.data(), cc);
-    });
-    printf("\n");
-    printf("====  testRBIntTree - Done!\n");
-}
- 
