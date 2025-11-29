@@ -77,8 +77,13 @@ int getSomePathNumBlacks(const RBIntTree* tree)
 
 bool isNodePathValid(const RBIntNode* node, int numUpperBlacks, int requiredNumBlacks)
 {
-    if (!node)
-        return numUpperBlacks == requiredNumBlacks;
+    if (!node) {
+        //return numUpperBlacks == requiredNumBlacks;
+        if (numUpperBlacks == requiredNumBlacks)
+            return true;
+        return false;
+
+    }
     if (isRed(node->parent()) && isRed(node))
         return false;
     int numBlacks = numUpperBlacks + (isBlack(node) ? 1 : 0);
@@ -103,16 +108,6 @@ void testRBIntTree()
 
     RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT VAlid");
 
-    /*
-    rbtree.add(10);
-    rbtree.add(7);
-    rbtree.add(6);
-    rbtree.add(5);
-    rbtree.add(4);
-    rbtree.add(3);
-    rbtree.add(2);
-    rbtree.add(1);
-    */
     rbtree.add(15);
     rbtree.add(18);
 
@@ -135,38 +130,70 @@ void testRBIntTree()
     rbtree.add(1);
 
     rbtree.add(17);
+    rbtree.add(9);                         
 
     RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT VAlid");
 
-
+    /*
     int valToRemove = 10;
     printf(" ~~~~~~~~~~~~~~~~~~~ before remove %d ~~~~~~~~~~~~~\n", valToRemove);
     drawRBNodeTree(&rbtree, 3);
 
     rbtree.remove(valToRemove);
 
-    drawRBNodeTree(&rbtree, 3);
     printf(" ~~~~~~~~~~~~~~~~~~~ after remove %d ~~~~~~~~~~~~~\n", valToRemove);
+    drawRBNodeTree(&rbtree, 3);
+    */
+    rbtree.remove(10);
+    RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT Valid");
 
-    RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT VAlid");
 
+    rbtree.add(33);
+    RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT Valid");
+    rbtree.add(7);
+    RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT Valid");
+
+    int valToRemove = 13;
+    printf(" ~~~~~~~~~~~~~~~~~~~ before remove %d ~~~~~~~~~~~~~\n", valToRemove);
+    drawRBNodeTree(&rbtree, 3);
+
+    rbtree.remove(valToRemove);
+
+    printf(" ~~~~~~~~~~~~~~~~~~~ after remove %d... \n", valToRemove);
+    drawRBNodeTree(&rbtree, 3);
+    RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT Valid");
+
+
+    rbtree.add(9);
+    RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT Valid");
+    rbtree.add(7);
+    RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT Valid");
+    rbtree.add(22);
+   
+
+
+    printf(" ~~~~~~~~~~~~~~~~~~~ after another changes... \n");
+    drawRBNodeTree(&rbtree, 3);
 
     int numBlacks = getSomePathNumBlacks(&rbtree);
     int depth = rbtree.root()->max_deepness();
+
+    RASSERT(isRBIntTreeValid(&rbtree), "RBTree NOT Valid");
+
     printf(" ~~~~ testRBIntTree(depth=%d, numBlacks=%d): iterateTreeNodesDF..\n", depth, numBlacks);
     iterateTreeNodesDF<int>(rbtree.root(), [](const TreeNode<int>& n)
-                            {
-                                auto rbn = (const RBIntNode&)n;
-                                char cc = isRed(&rbn) ? 'R' : 'B';
-                                printf("%d(%c),", rbn.data(), cc);
-                            });
+    {
+        auto rbn = (const RBIntNode&)n;
+        char cc = isRed(&rbn) ? 'R' : 'B';
+        printf("%d(%c),", rbn.data(), cc);
+    });
     printf("\niterateTreeNodesBF..\n");
     iterateTreeNodesBF<int>(rbtree.root(), [](const TreeNode<int>& n)
-                            {
-                                auto rbn = (const RBIntNode&)n;
-                                char cc = isRed(&rbn) ? 'R' : 'B';
-                                printf("%d(%c),", rbn.data(), cc);
-                            });
+    {
+        auto rbn = (const RBIntNode&)n;
+        char cc = isRed(&rbn) ? 'R' : 'B';
+        printf("%d(%c),", rbn.data(), cc);
+    });
     printf("\n");
     printf("====  testRBIntTree - Done!\n");
 }

@@ -151,12 +151,14 @@ void RBIntTree::fixDoubleBlackNode(RBIntNode* node)
             snode->setColor(RBColor::Black);
             snode->parent()->setColor(RBColor::Red);
             snode->parent()->rotateLeft();
+            fixDoubleBlackNode(node);
             return;
         }
         else { // if snode is Left - symmetically reversed actions
             snode->setColor(RBColor::Black);
             snode->parent()->setColor(RBColor::Red);
             snode->parent()->rotateRight();
+            fixDoubleBlackNode(node);
             return;
         }
     }
