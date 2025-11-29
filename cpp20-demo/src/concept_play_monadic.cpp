@@ -92,14 +92,51 @@ void test_vector_monad() {
 
 
 bool test_monadic_instances() {
+    std::println(" ~~ test_monadic_instances - started...");
+
     static_assert(HasUnit<MyIntMonad, int>, "MyMonad should have a unit method for int");
     static_assert(HasBind<MyIntMonad, decltype(&increment_and_wrap)>, "MyMonad should have a bind method");
     static_assert(IsMonadic<MyIntMonad, int, decltype(&increment_and_wrap)>, "MyMonad should be monadic");
+
+    static_assert(HasUnit<MyOptionalInt, int>, "MyOptionalInt should have a unit method for int");
+    static_assert(HasBind<MyOptionalInt, decltype(&increment_and_wrap)>, "MyMonad should have a bind method");
+    static_assert(IsMonadic<MyOptionalInt, int, decltype(&increment_and_wrap)>, "MyMonad should be monadic");
+
+    static_assert(HasUnit<MyOptionalInt, int>, "MyOptionalInt should have a unit method for int");
+    static_assert(HasBind<MyOptionalInt, std::function<MyOptionalInt(int)> >, "MyOptionalInt should have a bind method");
+    static_assert(IsMonadic<MyOptionalInt, int, std::function<MyOptionalInt(int)>>, "MyOptionalInt should be monadic");
+
+    MyOptionalInt m00(100);
+    auto m01 = m00.bind([](int x) { return MyOptionalInt::unit(x - 50); });
+    auto m02 = m01.bind(divide_100_to);
+
+    if (m02.IsValid()) {
+        std::println(" m02 is Valid! value={}", m02.Value());
+    }
+    else {
+        std::println(" m02 is Invalid!");
+    }
+
+    MyOptionalInt mnv00 = MyOptionalInt();
+    auto mnv01 = mnv00.bind(divide_100_to);
+
+    if (mnv01.IsValid()) {
+        std::println(" mnv01 is Valid! value={}", mnv01.Value());
+    }
+    else {
+        std::println(" mnv01 is Invalid!");
+    }
+
+
+
+
 
     // These will fail if uncommented, demonstrating compile-time checks
     // static_assert(HasUnit<AnotherMonad, int>, "AnotherMonad should have a unit method for int"); 
     // static_assert(HasBind<AnotherMonad, decltype(&increment_and_wrap)>, "AnotherMonad should have a bind method");
     // static_assert(IsMonadic<AnotherMonad, int, decltype(&increment_and_wrap)>, "AnotherMonad should be monadic");
+
+    std::println(" ~~ test_monadic_instances - completed...");
 
     return true;
 }

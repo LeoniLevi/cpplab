@@ -97,4 +97,31 @@ MyIntMonad increment_and_wrap(int x) {
     return MyIntMonad::unit(x + 1);
 }
 
-// static check of MyIntMonad is of 'IsMonadic' concept - in test_monadic_instances()...
+static_assert(IsMonadic<MyIntMonad, int, std::function<MyIntMonad(int)> >, "MyIntMonad should be monadic");
+
+//--------------------------------
+
+
+struct MyOptionalInt {
+    int number;
+    bool isValid;
+    MyOptionalInt() { isValid = false; number = 0; }
+    MyOptionalInt(int num) { isValid = true; number = num; }
+    bool IsValid() { return isValid; }
+    int Value() { return number; }
+
+    static MyOptionalInt unit(int v) { return MyOptionalInt(v); }
+    template <typename Func>
+    MyOptionalInt bind(Func f) const { return f(number); }
+};
+static_assert(IsMonadic<MyOptionalInt, int, std::function<MyOptionalInt(int)>>, "MyOptionalInt should be monadic");
+
+MyOptionalInt divide_100_to(int x) {
+    if (x == 0)
+        return MyOptionalInt();
+    return MyOptionalInt::unit(100 / x);
+}
+
+
+
+// static check of classes are they of 'IsMonadic' concept - in test_monadic_instances()...
