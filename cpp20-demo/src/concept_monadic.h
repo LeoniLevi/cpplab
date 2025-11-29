@@ -5,19 +5,6 @@
 #include <vector>
 #include <ranges>
 #include <functional>
-//#include <iostream>
-
-/* //??
-template <template <typename> typename M, typename T>
-concept Monad = requires(T val, M<T> m_val, auto func) {
-    // Requirement for 'return' or 'unit' operation
-    { M<T>::make_monadic(val) } -> std::same_as<M<T>>;
-
-    // Requirement for 'bind' operation
-    { m_val.and_then(func) } -> std::convertible_to<M<std::invoke_result_t<decltype(func), T>>>;
-    // The exact return type and argument types for 'and_then' would depend on the specific monad implementation.
-};
-*/
 
 // Concept for a Monadic type
 template <typename M, typename T>
@@ -62,3 +49,52 @@ namespace vector_monad {
     }
 }
 
+//=============================
+
+#include <concepts>
+#include <type_traits>
+#include <utility>
+
+// Concept for a type that can be "unit-constructed"
+template <typename M, typename T>
+concept HasUnit = requires(T val) {
+    { M::unit(val) } -> std::same_as<M>; // Assumes static unit method
+    // Or, for a constructor:
+    // { M(val) } -> std::same_as<M>;
+};
+
+// Concept for a type that has a "bind" operation
+template <typename M, typename F>
+concept HasBind = requires(M monad_instance, F func) {
+    // Assumes bind operation takes a function and returns a new monad
+    { monad_instance.bind(func) } -> std::same_as<M>;
+};
+
+// Combined concept for a Monadic type
+template <typename M, typename T, typename F>
+concept IsMonadic = HasUnit<M, T>&& HasBind<M, F>;
+
+// Example usage:
+struct MyIntMonad {
+    int value;
+
+    static MyIntMonad unit(int v) {
+        return { v };
+    }
+
+    template <typename Func>
+    MyIntMonad bind(Func f) const {
+        return f(value);
+    }
+};
+
+struct AnotherMonad {
+    // Missing unit or bind
+};
+
+// A function that can be used with bind
+MyIntMonad increment_and_wrap(int x) {
+    return MyIntMonad::unit(x + 1);
+}
+
+// static check of MyIntMonad is of 'IsMonadic' concept - in test_monadic_instances()...

@@ -36,7 +36,7 @@ void test_optional_monad() {
         };    
 
     if (result) {
-        std::println(" -- Result: %d", *result);
+        std::println(" -- Result: {}", *result);
     } else {
         std::println(" -- No result.");
     }
@@ -88,4 +88,18 @@ void test_vector_monad() {
     std::println();  
     
     std::println(" ~~ test_vector_monad - completed.");
+}
+
+
+bool test_monadic_instances() {
+    static_assert(HasUnit<MyIntMonad, int>, "MyMonad should have a unit method for int");
+    static_assert(HasBind<MyIntMonad, decltype(&increment_and_wrap)>, "MyMonad should have a bind method");
+    static_assert(IsMonadic<MyIntMonad, int, decltype(&increment_and_wrap)>, "MyMonad should be monadic");
+
+    // These will fail if uncommented, demonstrating compile-time checks
+    // static_assert(HasUnit<AnotherMonad, int>, "AnotherMonad should have a unit method for int"); 
+    // static_assert(HasBind<AnotherMonad, decltype(&increment_and_wrap)>, "AnotherMonad should have a bind method");
+    // static_assert(IsMonadic<AnotherMonad, int, decltype(&increment_and_wrap)>, "AnotherMonad should be monadic");
+
+    return true;
 }

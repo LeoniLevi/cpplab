@@ -98,5 +98,6 @@ void play_concepts()
 
     test_optional_monad();
     test_vector_monad();
-
+    if (test_monadic_instances())
+        printf(" ~~ test_monadic_instances returns TRUE\n");
 }
