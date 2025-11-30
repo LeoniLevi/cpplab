@@ -98,6 +98,11 @@ bool test_monadic_instances() {
     static_assert(HasBind<MyIntMonad, decltype(&increment_and_wrap)>, "MyMonad should have a bind method");
     static_assert(IsMonadic<MyIntMonad, int, decltype(&increment_and_wrap)>, "MyMonad should be monadic");
 
+    // These will fail if uncommented, demonstrating compile-time checks
+    // static_assert(HasUnit<AnotherMonad, int>, "AnotherMonad should have a unit method for int"); 
+    // static_assert(HasBind<AnotherMonad, decltype(&increment_and_wrap)>, "AnotherMonad should have a bind method");
+    // static_assert(IsMonadic<AnotherMonad, int, decltype(&increment_and_wrap)>, "AnotherMonad should be monadic");
+
     static_assert(HasUnit<MyOptionalInt, int>, "MyOptionalInt should have a unit method for int");
     static_assert(HasBind<MyOptionalInt, decltype(&increment_and_wrap)>, "MyMonad should have a bind method");
     static_assert(IsMonadic<MyOptionalInt, int, decltype(&increment_and_wrap)>, "MyMonad should be monadic");
@@ -128,13 +133,51 @@ bool test_monadic_instances() {
     }
 
 
+    //---------------
+    MyOptional<int> mon0 = MyOptional<int>(8);
+    MyOptional<int> mon1 = mon0.bind(triple<int>);
+    MyOptional<int> mon2 = mon1.bind(triple<int>);
 
+    if (mon2.IsValid()) {
+        std::println(" mon2 is Valid! Value={}", mon2.Value());
+    }
+    else {
+        std::println(" mon2 is Invalid!");
+    }
 
+    auto mon00 = MyOptional<int>();
+    MyOptional<int> mon01 = mon00.bind(triple<int>);
+    MyOptional<int> mon02 = mon01.bind(triple<int>);
+    
+    if (mon02.IsValid()) {
+        std::println(" mon02 is Valid! Value={}", mon02.Value());
+    }
+    else {
+        std::println(" mon02 is Invalid!");
+    }
 
-    // These will fail if uncommented, demonstrating compile-time checks
-    // static_assert(HasUnit<AnotherMonad, int>, "AnotherMonad should have a unit method for int"); 
-    // static_assert(HasBind<AnotherMonad, decltype(&increment_and_wrap)>, "AnotherMonad should have a bind method");
-    // static_assert(IsMonadic<AnotherMonad, int, decltype(&increment_and_wrap)>, "AnotherMonad should be monadic");
+    
+    MyOptional<std::string> mos0 = MyOptional<std::string>("root!");
+    MyOptional<std::string> mos1 = mos0.bind(triple<std::string>);
+    MyOptional<std::string> mos2 = mos1.bind(triple<std::string>);
+    if (mos2.IsValid()) {
+        std::println(" mos2 is Valid! Value={}", mos2.Value());
+    }
+    else {
+        std::println(" mos2 is Invalid!");
+    }
+
+    MyOptional<std::string> mos00 = MyOptional<std::string>();
+    MyOptional<std::string> mos01 = mos00.bind(triple<std::string>);
+    MyOptional<std::string> mos02 = mos01.bind(triple<std::string>);
+    if (mos02.IsValid()) {
+        std::println(" mos02 is Valid! Value={}", mos02.Value());
+    }
+    else {
+        std::println(" mos02 is Invalid!");
+    }
+    
+    
 
     std::println(" ~~ test_monadic_instances - completed...");
 

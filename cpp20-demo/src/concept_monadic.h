@@ -5,6 +5,7 @@
 #include <vector>
 #include <ranges>
 #include <functional>
+#include <string>
 
 // Concept for a Monadic type
 template <typename M, typename T>
@@ -121,6 +122,29 @@ MyOptionalInt divide_100_to(int x) {
         return MyOptionalInt();
     return MyOptionalInt::unit(100 / x);
 }
+
+template <typename T>
+struct MyOptional {
+    T value;
+    bool isValid;
+    MyOptional<T>() { isValid = false; value = T(); }
+    MyOptional(T val) { isValid = true; value = val; }
+    bool IsValid() { return isValid; }
+    T Value() { return value; }
+
+    static MyOptional<T> unit(T v) { return MyOptional<T>(v); }
+    template <typename Func>
+    MyOptional<T> bind(Func f) const { return isValid ? f(value) : MyOptional<T>(); }
+};
+static_assert(IsMonadic<MyOptional<int>, int, std::function<MyOptional<int>(int)>>, "MyOptional<int> should be monadic");
+static_assert(IsMonadic<MyOptional<std::string>, std::string, std::function<MyOptional<std::string>(std::string)>>, "MyOptional<std::string> should be monadic");
+
+template <typename T>
+MyOptional<T> triple(T v) {    
+    return MyOptional<T>::unit(v + v + v);
+}
+
+
 
 
 
