@@ -1,5 +1,14 @@
 #include "concept_play_monadic.h"
-#include "concept_monadic.h"
+
+//#define CHECK_MONADIC
+#ifdef CHECK_MONADIC
+#   include "concept_monadic.h"
+#endif
+
+#define CHECK_IS_MONADIC
+#ifdef CHECK_IS_MONADIC
+#   include "concept_is_monadic.h"
+#endif
 
 #include <print>
 
@@ -17,6 +26,7 @@ void printCollection(const Coll& container) {
     std::print("}}");
 }
 
+#ifdef CHECK_MONADIC
 void test_optional_monad() {    
     std::println(" ~~ test_optional_monad - started...");
 
@@ -90,50 +100,39 @@ void test_vector_monad() {
     std::println(" ~~ test_vector_monad - completed.");
 }
 
+void test_monadic00()
+{
+    test_optional_monad();
+    test_vector_monad();
+}
+#endif
+
+template <typename T>
+MyOptional<T> triple(T v) {
+    return MyOptional<T>::unit(v + v + v);
+}
 
 bool test_monadic_instances() {
     std::println(" ~~ test_monadic_instances - started...");
 
-    static_assert(HasUnit<MyIntMonad, int>, "MyMonad should have a unit method for int");
-    static_assert(HasBind<MyIntMonad, decltype(&increment_and_wrap)>, "MyMonad should have a bind method");
-    static_assert(IsMonadic<MyIntMonad, int, decltype(&increment_and_wrap)>, "MyMonad should be monadic");
+    //static_assert(HasUnit<MyIntMonad, int>, "MyMonad should have a unit method for int");
+    //static_assert(HasBind<MyIntMonad, decltype(&increment_and_wrap)>, "MyMonad should have a bind method");
+    static_assert(IsMonadic00<MyIntMonad00, int, decltype(&increment_and_wrap)>, "MyMonad should be monadic");
 
     // These will fail if uncommented, demonstrating compile-time checks
     // static_assert(HasUnit<AnotherMonad, int>, "AnotherMonad should have a unit method for int"); 
     // static_assert(HasBind<AnotherMonad, decltype(&increment_and_wrap)>, "AnotherMonad should have a bind method");
     // static_assert(IsMonadic<AnotherMonad, int, decltype(&increment_and_wrap)>, "AnotherMonad should be monadic");
-
-    static_assert(HasUnit<MyOptionalInt, int>, "MyOptionalInt should have a unit method for int");
-    static_assert(HasBind<MyOptionalInt, decltype(&increment_and_wrap)>, "MyMonad should have a bind method");
-    static_assert(IsMonadic<MyOptionalInt, int, decltype(&increment_and_wrap)>, "MyMonad should be monadic");
-
-    static_assert(HasUnit<MyOptionalInt, int>, "MyOptionalInt should have a unit method for int");
-    static_assert(HasBind<MyOptionalInt, std::function<MyOptionalInt(int)> >, "MyOptionalInt should have a bind method");
-    static_assert(IsMonadic<MyOptionalInt, int, std::function<MyOptionalInt(int)>>, "MyOptionalInt should be monadic");
-
-    MyOptionalInt m00(100);
-    auto m01 = m00.bind([](int x) { return MyOptionalInt::unit(x - 50); });
-    auto m02 = m01.bind(divide_100_to);
-
-    if (m02.IsValid()) {
-        std::println(" m02 is Valid! value={}", m02.Value());
-    }
-    else {
-        std::println(" m02 is Invalid!");
-    }
-
-    MyOptionalInt mnv00 = MyOptionalInt();
-    auto mnv01 = mnv00.bind(divide_100_to);
-
-    if (mnv01.IsValid()) {
-        std::println(" mnv01 is Valid! value={}", mnv01.Value());
-    }
-    else {
-        std::println(" mnv01 is Invalid!");
-    }
-
+   
 
     //---------------
+    static_assert(IsMonadic<
+            MyOptional<int>, 
+            int, 
+            std::function<MyOptional<int>(int)>
+        >, 
+        "MyOptional<int> should be monadic");
+
     MyOptional<int> mon0 = MyOptional<int>(8);
     MyOptional<int> mon1 = mon0.bind(triple<int>);
     MyOptional<int> mon2 = mon1.bind(triple<int>);
@@ -167,6 +166,14 @@ bool test_monadic_instances() {
         std::println(" mos2 is Invalid!");
     }
 
+    static_assert(IsMonadic<
+            MyOptional<std::string>, 
+            std::string, 
+            std::function<MyOptional<std::string>(std::string)> 
+        >, 
+        "MyOptional<std::string> should be monadic");
+
+
     MyOptional<std::string> mos00 = MyOptional<std::string>();
     MyOptional<std::string> mos01 = mos00.bind(triple<std::string>);
     MyOptional<std::string> mos02 = mos01.bind(triple<std::string>);
@@ -176,10 +183,18 @@ bool test_monadic_instances() {
     else {
         std::println(" mos02 is Invalid!");
     }
-    
-    
 
     std::println(" ~~ test_monadic_instances - completed...");
 
     return true;
+}
+
+void test_my_monads()
+{
+#ifdef CHECK_MONADIC
+    test_monadic00();
+#endif
+#ifdef CHECK_IS_MONADIC
+    test_monadic_instances();
+#endif
 }

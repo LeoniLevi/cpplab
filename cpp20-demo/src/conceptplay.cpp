@@ -96,8 +96,7 @@ void play_concepts()
     printf(" ~~ TotalLen2Fun result: ofStrings=%f\n", sslens);
     //double pplens = TotalLen2Fun(points); // ERROR
 
-    test_optional_monad();
-    test_vector_monad();
-    if (test_monadic_instances())
-        printf(" ~~ test_monadic_instances returns TRUE\n");
+    //test_optional_monad();
+    //test_vector_monad();
+    test_my_monads();
 }
