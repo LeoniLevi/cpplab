@@ -25,7 +25,7 @@ protected:
 };
 
 TEST_F(MyArrFixture, TestQSorting) {
-    myqsort(intArrPtr, intArrLen);
+    myqsort01(intArrPtr, intArrLen);
     for (int i = 1; i < intArrLen; ++i) {
         EXPECT_GE(intArrPtr[i], intArrPtr[i - 1]);
     }
@@ -38,7 +38,7 @@ TEST(QSortTest, Simple) {
     int* items = varr.data();
     int numItems = (int) varr.size();
 
-    myqsort(items, numItems);
+    myqsort01(items, numItems);
 
     for (int i = 0; i < numItems; ++i) {
         EXPECT_EQ(items[i], sorted[i]);

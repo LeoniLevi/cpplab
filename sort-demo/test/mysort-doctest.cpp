@@ -24,7 +24,7 @@ struct MyArrFixture {
 };
 
 DOCTEST_TEST_CASE_FIXTURE(MyArrFixture, "test QSort using fixture") {
-    myqsort(intArrPtr, intArrLen);
+    myqsort01(intArrPtr, intArrLen);
     for (int i = 1; i < intArrLen; ++i) {
         CHECK(intArrPtr[i] >= intArrPtr[i - 1]);
     }
@@ -36,7 +36,7 @@ TEST_CASE("Testing myqsort function") {
     int* items = varr.data();
     int numItems = (int)varr.size();
 
-    myqsort(items, numItems);
+    myqsort01(items, numItems);
 
     for (int i = 0; i < numItems; ++i) {
         CHECK(items[i] == sorted[i]);

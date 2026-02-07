@@ -20,7 +20,7 @@ void myqsort1(int items[], size_t beginIdx, size_t endIdx);
 
 
 //----------------
-void myqsort(int items[], int len)
+void myqsort01(int items[], int len)
 {
 	myqsort1(items, 0, len);
 }
@@ -147,6 +147,10 @@ void test_myqsort()
 
 
 //========== OLD functions ==========
+void myqsort00(int items[], int len)
+{
+	myqsort_old(items, 0, len);
+}
 
 void myqsort_old(int* items, size_t beginIdx, size_t endIdx)
 {
