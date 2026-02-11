@@ -12,7 +12,7 @@ set(CMAKE_CXX_STANDARD 17)
 #set(CMAKE_MSVC_RUNTIME_LIBRARY MultiThreaded$<$<CONFIG:Debug>:Debug>DLL)
 
 add_subdirectory(BinaryTree)
-#add_subdirectory(expr-demo)
+add_subdirectory(expr-demo)
 
 message(" ~~ CMAKE_CXX_COMPILE_FEATURES: ${CMAKE_CXX_COMPILE_FEATURES}")
 if("cxx_std_20" IN_LIST CMAKE_CXX_COMPILE_FEATURES)

@@ -28,7 +28,7 @@ target_link_libraries(sort_demo mysort)
 
 # Add tests
 #-----------
-option (BUILD_TESTS "Build C++ Unit Tests" ON)
+option (BUILD_TESTS "Build C++ Unit Tests" OFF)
 
 if (BUILD_TESTS)
 

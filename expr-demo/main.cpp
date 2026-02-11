@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-
+#include "IntKeyValueDbMap.h"
 
 int main()
 {
@@ -10,7 +10,7 @@ int main()
 
 	printf(" ~~ __cplusplus: %uu\n", __cplusplus);
 
-
+	TestIntKeyValueDbMap();
 
 	printf("====== program 'expr-demo': Completed! To exit - click <Enter>:\n");
 	{ char dummy[32]; fgets(dummy, sizeof dummy, stdin); }
